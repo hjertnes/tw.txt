@@ -1,0 +1,12 @@
+# your nick
+nick: hjertnes
+# url of your twtxt file
+url: https://hjertnes.social/twtxt.txt
+# the location of your twtxt file on your computer
+file: ~/txt/twtxt.txt
+# whether we'll include your url in the user-agent header when downloading feeds
+discloseidentity: true
+# who you follow
+following:
+  hjertnes: https://hjertnes.social/twtxt.txt
+

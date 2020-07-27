@@ -1,0 +1,9 @@
+* tw.txt
+Since more or less every user of [[twtxt]] have their own client I decided to make my own. I like [[twet]] but I have some different opinions of a few things so this is my take on it. 
+
+** Configuration files
+- ~/.tw.txt/config.yaml -> tw.txt specific configuration
+- Most of the configuration will be a file like config.yaml.sample in this repo. The intent of it will be to have the stuff all twtxt clients need. To end the nightmare of one config per client we currently have.
+
+** Attribution
+- The output from the timeline command is heavily based on the one from [[twet]]
