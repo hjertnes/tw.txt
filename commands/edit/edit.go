@@ -2,12 +2,10 @@
 package edit
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
 // Command for editing twtxt in EDITOR.
@@ -20,7 +18,12 @@ type command struct {
 }
 
 func (c *command) Execute() {
-	_ = exec.Command(fmt.Sprintf("%s %s", os.Getenv("EDITOR"), utils.ReplaceTilde(c.Config.CommonConfig.File))).Start()
+	cmd := exec.Command(os.Getenv("EDITOR"))
+	cmd.Args = append(cmd.Args, c.Config.CommonConfig.File)
+	err := cmd.Start()
+	if err != nil{
+		panic(err)
+	}
 }
 
 // New creates new Command.

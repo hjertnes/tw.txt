@@ -48,7 +48,10 @@ func (c *command) Execute(){
 		fmt.Println("ConfigFileLocation: location of your common twtxt yaml config file")
 		fmt.Println("I keep mine next to my twtxt file")
 		fmt.Println("Sample: https://git.sr.ht/~hjertnes/tw.txt/tree/master/config.yaml.sample")
-		exec.Command(fmt.Sprintf("%s %s", os.Getenv("EDITOR"), filename))
+		cmd := exec.Command(os.Getenv("EDITOR"))
+		cmd.Args = append(cmd.Args, filename)
+		err = cmd.Run()
+		utils.ErrorHandler(err)
 	}
 }
 
