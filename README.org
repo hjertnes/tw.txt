@@ -7,3 +7,13 @@ Since more or less every user of [[twtxt]] have their own client I decided to ma
 
 ** Attribution
 - The output from the timeline command is heavily based on the one from [[twet]]
+
+
+** TODO
+- edit config
+- edit config common
+- edit config tw.txt
+- timeline -f
+- unfollow handle
+- follow handle url
+- tweet

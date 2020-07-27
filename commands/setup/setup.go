@@ -42,17 +42,17 @@ func (c *command) Execute(){
 
 		err = f.Close()
 		utils.ErrorHandler(err)
-		fmt.Println("Information about the config file:")
-		fmt.Println("TwtxtLocation: where you twtxt file is")
-		fmt.Println("More about twtxt https://twtxt.readthedocs.org/en/stable/")
-		fmt.Println("ConfigFileLocation: location of your common twtxt yaml config file")
-		fmt.Println("I keep mine next to my twtxt file")
-		fmt.Println("Sample: https://git.sr.ht/~hjertnes/tw.txt/tree/master/config.yaml.sample")
-		cmd := exec.Command(os.Getenv("EDITOR"))
-		cmd.Args = append(cmd.Args, filename)
-		err = cmd.Run()
-		utils.ErrorHandler(err)
 	}
+	fmt.Println("Information about the config file:")
+	fmt.Println("TwtxtLocation: where you twtxt file is")
+	fmt.Println("More about twtxt https://twtxt.readthedocs.org/en/stable/")
+	fmt.Println("ConfigFileLocation: location of your common twtxt yaml config file")
+	fmt.Println("I keep mine next to my twtxt file")
+	fmt.Println("Sample: https://git.sr.ht/~hjertnes/tw.txt/tree/master/config.yaml.sample")
+	cmd := exec.Command(os.Getenv("EDITOR"))
+	cmd.Args = append(cmd.Args, filename)
+	err := cmd.Start()
+	utils.ErrorHandler(err)
 }
 
 // New creates new Command.
