@@ -56,6 +56,10 @@ func main() {
 			utils.ErrorHandler(err)
 			tweet.New(conf).Execute(params[0])
 		}
+	case "replace-mentions":
+		conf, err := config.New()
+		utils.ErrorHandler(err)
+		tweet.New(conf).Execute("")
 	default:
 		help.New().Execute()
 	}

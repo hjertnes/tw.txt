@@ -21,12 +21,13 @@ func (c *command) Execute() {
 	fmt.Println("\t\t full - prints your entire timeline")
 	fmt.Println("\tedit - opens your twtxt in $EDITOR")
 	fmt.Println("\t\t twtxt - opens your twtxt in $EDITOR")
-	fmt.Println("\t\t common-config - opens common-config in EDITO")
+	fmt.Println("\t\t common-config - opens common-config in EDITOR")
 	fmt.Println("\t\t internal-config - opens tw.txt config in $EDITOR")
 	fmt.Println("\tsetup - creates config file and opens it in $EDITOR")
 	fmt.Println("\tfollow [nick] [url] - follows the specified feed")
 	fmt.Println("\tunfollow [nick] - unfollows the specified feed")
-	fmt.Println("\ttweet [message] - posts a new row to your twtxt")
+	fmt.Println("\ttweet [message] - posts a new row to your twtxt; will replace any @handle with @<handle url>")
+	fmt.Println("\treplace-mentions - will replace all @handle with @<handle url>")
 }
 
 // New is the constructor.
