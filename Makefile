@@ -11,3 +11,5 @@ cover:
 	go tool cover -html=coverage.out -o coverage.html
 lint:
 	golangci-lint run --fix
+install:
+	cp tw.txt ../../bin

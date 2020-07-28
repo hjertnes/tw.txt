@@ -57,13 +57,51 @@ func readInternalConfig() (*InternalConfig, error) {
 	return config, nil
 }
 
+func writeInternalConfig(conf *InternalConfig) error {
+	configFilename := utils.ReplaceTilde("~/.tw.txt/config.yaml")
+	if !utils.Exist(configFilename) {
+		return constants.ErrConfigDoesNotExist
+	}
+
+	content, err := yaml.Marshal(conf)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(configFilename, content, 0)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func writeCommonConfig(conf *Config) error {
+	configFilename := utils.ReplaceTilde(conf.InternalConfig.ConfigFileLocation)
+	if !utils.Exist(configFilename) {
+		return constants.ErrConfigDoesNotExist
+	}
+
+	content, err := yaml.Marshal(conf.CommonConfig)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(configFilename, content, 0)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func readCommonConfig(filename string) (*CommonConfig, error) {
 	configFilename := utils.ReplaceTilde(filename)
 	if !utils.Exist(configFilename) {
 		return nil, constants.ErrConfigDoesNotExist
 	}
 
-	f, err := os.OpenFile(configFilename, os.O_RDWR, 0600)
+	f, err := os.OpenFile(configFilename, os.O_RDONLY, 0600)
 	if err != nil {
 		return nil, err
 	}
@@ -99,4 +137,13 @@ func New() (*Config, error) {
 		InternalConfig: internal,
 		CommonConfig:   common,
 	}, nil
+}
+
+// Save Write back config files.
+func Save(conf *Config) {
+	err := writeInternalConfig(conf.InternalConfig)
+	utils.ErrorHandler(err)
+
+	err = writeCommonConfig(conf)
+	utils.ErrorHandler(err)
 }

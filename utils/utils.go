@@ -23,20 +23,25 @@ func ReplaceTilde(input string) string {
 	return strings.ReplaceAll(input, "~", home)
 }
 
+const (
+	one = 1
+	two = 2
+)
+
 // ParseArgs Parses args.
-func ParseArgs(args []string) (string, string) {
+func ParseArgs(args []string) (string, string, []string) {
 	command := ""
 	subCommand := ""
 
-	if len(args) > 1{
-		command = args[1]
+	if len(args) > one {
+		command = args[one]
 	}
 
-	if len(args) > 2 {
-		subCommand = args[2]
+	if len(args) > two {
+		subCommand = args[two]
 	}
 
-	return command, subCommand
+	return command, subCommand, args[two:]
 }
 
 // ErrorHandler Handles errors with panic.
@@ -46,37 +51,47 @@ func ErrorHandler(err error) {
 	}
 }
 
+const (
+	daysInAYear     = 365
+	daysInAWeek     = 7
+	daysInTwoWeeks  = 14
+	secondsInADay   = 86400
+	secondsInAnHour = 3600
+	sixDays         = 6
+	minutesInAnHour = 60
+)
+
 // PrettyDuration Pretty print a duration.
 func PrettyDuration(duration time.Duration) string {
 	s := int(duration.Seconds())
-	d := s / 86400
+	d := s / secondsInADay
 
-	s %= 86400
+	s %= secondsInADay
 
-	if d >= 365 {
-		return fmt.Sprintf("%dy %dw ago", d/365, d%365/7)
+	if d >= daysInAYear {
+		return fmt.Sprintf("%dy %dw ago", d/daysInAYear, d%daysInAYear/daysInAWeek)
 	}
 
-	if d >= 14 {
-		return fmt.Sprintf("%dw ago", d/7)
+	if d >= daysInTwoWeeks {
+		return fmt.Sprintf("%dw ago", d/daysInAWeek)
 	}
 
-	h := s / 3600
+	h := s / secondsInAnHour
 
-	s %= 3600
+	s %= secondsInAnHour
 
 	if d > 0 {
 		str := fmt.Sprintf("%dd", d)
-		if h > 0 && d <= 6 {
+		if h > 0 && d <= sixDays {
 			str += fmt.Sprintf(" %dh", h)
 		}
 
 		return str + " ago"
 	}
 
-	m := s / 60
+	m := s / minutesInAnHour
 
-	s %= 60
+	s %= minutesInAnHour
 
 	if h > 0 || m > 0 {
 		str := ""
@@ -130,12 +145,12 @@ func ParseFile(handle string, url string, lines []string) []models.Tweet {
 	o := make([]models.Tweet, 0)
 
 	for _, line := range lines {
-		if strings.HasPrefix(line, "#"){
+		if strings.HasPrefix(line, "#") {
 			continue
 		}
 
 		parts := strings.Split(line, "\t")
-		if len(parts) < 2 {
+		if len(parts) < two {
 			continue
 		}
 

@@ -1,8 +1,12 @@
 package main
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/commands/help"
 	"os"
+
+	"git.sr.ht/~hjertnes/tw.txt/commands/follow"
+	"git.sr.ht/~hjertnes/tw.txt/commands/unfollow"
+
+	"git.sr.ht/~hjertnes/tw.txt/commands/help"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/edit"
 	"git.sr.ht/~hjertnes/tw.txt/commands/setup"
@@ -11,9 +15,10 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
-func main() {
-	command,subCommand := utils.ParseArgs(os.Args)
+const two = 2
 
+func main() {
+	command, subCommand, params := utils.ParseArgs(os.Args)
 
 	switch command {
 	case "setup":
@@ -26,6 +31,22 @@ func main() {
 		conf, err := config.New()
 		utils.ErrorHandler(err)
 		edit.New(conf).Execute(subCommand)
+	case "follow":
+		if len(params) < two {
+			help.New().Execute()
+		} else {
+			conf, err := config.New()
+			utils.ErrorHandler(err)
+			follow.New(conf).Execute(params[0], params[1])
+		}
+	case "unfollow":
+		if len(params) < 1 {
+			help.New().Execute()
+		} else {
+			conf, err := config.New()
+			utils.ErrorHandler(err)
+			unfollow.New(conf).Execute(params[0])
+		}
 	default:
 		help.New().Execute()
 	}

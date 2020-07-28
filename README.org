@@ -10,8 +10,6 @@ Since more or less every user of [[twtxt]] have their own client I decided to ma
 
 
 ** TODO
-- unfollow handle
-- follow handle url
 - tweet
 - reply
 - replace-mentions

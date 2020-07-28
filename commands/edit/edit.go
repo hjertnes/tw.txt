@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/exec"
 
+	"git.sr.ht/~hjertnes/tw.txt/utils"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 )
 
@@ -18,7 +20,10 @@ type command struct {
 }
 
 func (c *command) Execute(subCommand string) {
+	/* #nosec */
 	cmd := exec.Command(os.Getenv("EDITOR"))
+	/* #sec */
+
 	switch subCommand {
 	case "internal-config":
 		cmd.Args = append(cmd.Args, "~/tw.txt/config.yaml")
@@ -29,9 +34,7 @@ func (c *command) Execute(subCommand string) {
 	}
 
 	err := cmd.Start()
-	if err != nil{
-		panic(err)
-	}
+	utils.ErrorHandler(err)
 }
 
 // New creates new Command.

@@ -1,16 +1,17 @@
+// Package help exposes a command for showing help message
 package help
 
 import "fmt"
 
+// Command is the exposed interface of this package.
 type Command interface {
 	Execute()
 }
 
 type command struct {
-
 }
 
-func (c *command) Execute(){
+func (c *command) Execute() {
 	fmt.Println("tw.txt is another twtxt client -- https://twtxt.readthedocs.org/en/stable")
 	fmt.Println("Usage:")
 	fmt.Println("\t tw.txt command")
@@ -23,8 +24,11 @@ func (c *command) Execute(){
 	fmt.Println("\t\t common-config - opens common-config in EDITO")
 	fmt.Println("\t\t internal-config - opens tw.txt config in $EDITOR")
 	fmt.Println("\tsetup - creates config file and opens it in $EDITOR")
+	fmt.Println("\tfollow [nick] [url] - follows the specified feed")
+	fmt.Println("\tunfollow [nick] - unfollows the specified feed")
 }
 
-func New() Command{
+// New is the constructor.
+func New() Command {
 	return &command{}
 }

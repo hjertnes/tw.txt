@@ -11,6 +11,8 @@ import (
 	"sync"
 	"time"
 
+	"golang.org/x/net/context"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/output"
@@ -44,16 +46,11 @@ func (c *command) Execute(subCommand string) {
 	// max parallel http fetchers
 	fetchers := make(chan struct{}, maxfetchers)
 
-	identity := ""
-	if c.Config.CommonConfig.DiscloseIdentity{
-		identity = c.Config.CommonConfig.URL
-	}
-
 	for handle, url := range feeds {
 		wg.Add(1)
 		fetchers <- struct{}{}
 
-		go func(handle string, url string, identity string) {
+		go func(handle string, url string) {
 			defer func() {
 				<-fetchers
 
@@ -65,7 +62,7 @@ func (c *command) Execute(subCommand string) {
 			feed, _ := c.GetFeed(url)
 			tweets := utils.ParseFile(handle, url, feed)
 			tweetsch <- tweets
-		}(handle, url, identity)
+		}(handle, url)
 	}
 
 	go func() {
@@ -82,7 +79,7 @@ func (c *command) Execute(subCommand string) {
 	})
 
 	for i, tweet := range timeline {
-		if i > len(timeline)-1000  || subCommand == "full"{
+		if i > len(timeline)-1000 || subCommand == "full" {
 			c.PrintTweet(tweet, time.Now())
 		}
 	}
@@ -131,22 +128,19 @@ func (c *command) FormatMention(nick, url, followednick string) string {
 	return output.Blue(str)
 }
 
-
-
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) ([]string, error) {
 	client := http.Client{}
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	ctx := context.TODO()
+	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 
-	if c.Config.CommonConfig.DiscloseIdentity{
+	if c.Config.CommonConfig.DiscloseIdentity {
 		req.Header.Set("User-Agent",
-					fmt.Sprintf("%s/%s (+%s; @%s)", "tw.txt", "0.0.1",
-						c.Config.CommonConfig.URL, c.Config.CommonConfig.Nick))
+			fmt.Sprintf("%s/%s (+%s; @%s)", "tw.txt", "0.0.1",
+				c.Config.CommonConfig.URL, c.Config.CommonConfig.Nick))
 	}
 
-
 	resp, err := client.Do(req)
-
 	if err != nil {
 		return make([]string, 0), err
 	}
@@ -155,6 +149,8 @@ func (c *command) GetFeed(url string) ([]string, error) {
 	if err != nil {
 		return make([]string, 0), err
 	}
+
+	_ = resp.Body.Close()
 
 	return strings.Split(string(content), "\n"), nil
 }
