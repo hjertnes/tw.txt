@@ -1,6 +1,7 @@
 package main
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/commands/tweet"
 	"os"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/follow"
@@ -46,6 +47,14 @@ func main() {
 			conf, err := config.New()
 			utils.ErrorHandler(err)
 			unfollow.New(conf).Execute(params[0])
+		}
+	case "tweet":
+		if len(params) < 1 {
+			help.New().Execute()
+		} else {
+			conf, err := config.New()
+			utils.ErrorHandler(err)
+			tweet.New(conf).Execute(params[0])
 		}
 	default:
 		help.New().Execute()

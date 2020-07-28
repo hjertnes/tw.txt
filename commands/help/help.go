@@ -26,6 +26,7 @@ func (c *command) Execute() {
 	fmt.Println("\tsetup - creates config file and opens it in $EDITOR")
 	fmt.Println("\tfollow [nick] [url] - follows the specified feed")
 	fmt.Println("\tunfollow [nick] - unfollows the specified feed")
+	fmt.Println("\ttweet [message] - posts a new row to your twtxt")
 }
 
 // New is the constructor.
