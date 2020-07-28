@@ -28,6 +28,7 @@ func (c *command) Execute() {
 	fmt.Println("\tunfollow [nick] - unfollows the specified feed")
 	fmt.Println("\ttweet [message] - posts a new row to your twtxt; will replace any @handle with @<handle url>")
 	fmt.Println("\treplace-mentions - will replace all @handle with @<handle url>")
+	fmt.Println("\tfollowing - lists who you follow")
 }
 
 // New is the constructor.
