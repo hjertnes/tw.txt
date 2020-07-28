@@ -10,16 +10,24 @@ import (
 
 // Command for editing twtxt in EDITOR.
 type Command interface {
-	Execute()
+	Execute(subCommand string)
 }
 
 type command struct {
 	Config *config.Config
 }
 
-func (c *command) Execute() {
+func (c *command) Execute(subCommand string) {
 	cmd := exec.Command(os.Getenv("EDITOR"))
-	cmd.Args = append(cmd.Args, c.Config.CommonConfig.File)
+	switch subCommand {
+	case "internal-config":
+		cmd.Args = append(cmd.Args, "~/tw.txt/config.yaml")
+	case "common-config":
+		cmd.Args = append(cmd.Args, c.Config.InternalConfig.ConfigFileLocation)
+	default:
+		cmd.Args = append(cmd.Args, c.Config.CommonConfig.File)
+	}
+
 	err := cmd.Start()
 	if err != nil{
 		panic(err)

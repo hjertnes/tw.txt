@@ -21,59 +21,16 @@ import (
 
 // Command is the publicly exposed interface.
 type Command interface {
-	Execute()
+	Execute(subCommand string)
 }
 
 type command struct {
 	Config *config.Config
 }
 
-func (c *command) PrintTweet(tweet models.Tweet, now time.Time) {
-	text := c.ShortenMentions(tweet.Message)
-
-	nick := output.Green(tweet.Handle)
-	if nick == c.Config.CommonConfig.Nick {
-		nick = output.BoldGreen(tweet.Handle)
-	}
-
-	fmt.Printf("> %s (%s)\n%s\n",
-		nick,
-		utils.PrettyDuration(now.Sub(tweet.Timestamp)),
-		text)
-}
-
-func (c *command) ShortenMentions(text string) string {
-	re := regexp.MustCompile(`@<([^ ]+) *([^>]+)>`)
-
-	return re.ReplaceAllStringFunc(text, func(match string) string {
-		parts := re.FindStringSubmatch(match)
-		nick, url := parts[1], parts[2]
-		for fnick, furl := range c.Config.CommonConfig.Following {
-			if furl == url {
-				return c.FormatMention(nick, url, fnick)
-			}
-		}
-
-		return match
-	})
-}
-
-func (c *command) FormatMention(nick, url, followednick string) string {
-	str := "@" + nick
-	if followednick != nick {
-		str += fmt.Sprintf("(%s)", followednick)
-	}
-
-	if utils.NormalizeURL(url) == utils.NormalizeURL(c.Config.CommonConfig.URL) {
-		return output.Red(str)
-	}
-
-	return output.Blue(str)
-}
-
 const maxfetchers = 50
 
-func (c *command) Execute() {
+func (c *command) Execute(subCommand string) {
 	timeline := make([]models.Tweet, 0)
 
 	feeds := c.Config.CommonConfig.Following
@@ -125,11 +82,56 @@ func (c *command) Execute() {
 	})
 
 	for i, tweet := range timeline {
-		if i > len(timeline)-1000 {
+		if i > len(timeline)-1000  || subCommand == "full"{
 			c.PrintTweet(tweet, time.Now())
 		}
 	}
 }
+
+func (c *command) PrintTweet(tweet models.Tweet, now time.Time) {
+	text := c.ShortenMentions(tweet.Message)
+
+	nick := output.Green(tweet.Handle)
+	if nick == c.Config.CommonConfig.Nick {
+		nick = output.BoldGreen(tweet.Handle)
+	}
+
+	fmt.Printf("> %s (%s)\n%s\n",
+		nick,
+		utils.PrettyDuration(now.Sub(tweet.Timestamp)),
+		text)
+}
+
+func (c *command) ShortenMentions(text string) string {
+	re := regexp.MustCompile(`@<([^ ]+) *([^>]+)>`)
+
+	return re.ReplaceAllStringFunc(text, func(match string) string {
+		parts := re.FindStringSubmatch(match)
+		nick, url := parts[1], parts[2]
+		for fnick, furl := range c.Config.CommonConfig.Following {
+			if furl == url {
+				return c.FormatMention(nick, url, fnick)
+			}
+		}
+
+		return match
+	})
+}
+
+func (c *command) FormatMention(nick, url, followednick string) string {
+	str := "@" + nick
+	if followednick != nick {
+		str += fmt.Sprintf("(%s)", followednick)
+	}
+
+	if utils.NormalizeURL(url) == utils.NormalizeURL(c.Config.CommonConfig.URL) {
+		return output.Red(str)
+	}
+
+	return output.Blue(str)
+}
+
+
 
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) ([]string, error) {

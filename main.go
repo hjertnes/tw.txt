@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/commands/help"
 	"os"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/edit"
@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-	command, _ := utils.ParseArgs(os.Args)
+	command,subCommand := utils.ParseArgs(os.Args)
+
 
 	switch command {
 	case "setup":
@@ -20,19 +21,12 @@ func main() {
 	case "timeline":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
-		timeline.New(conf).Execute()
+		timeline.New(conf).Execute(subCommand)
 	case "edit":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
-		edit.New(conf).Execute()
+		edit.New(conf).Execute(subCommand)
 	default:
-		fmt.Println("tw.txt is another twtxt client -- https://twtxt.readthedocs.org/en/stable")
-		fmt.Println("Usage:")
-		fmt.Println("\t tw.txt command")
-		fmt.Println()
-		fmt.Println("Commands:")
-		fmt.Println("\ttimeline - prints last 1000 items in your timeline")
-		fmt.Println("\tedit - opens your twtxt in $EDITOR")
-		fmt.Println("\tsetup - creates config file and opens it in $EDITOR")
+		help.New().Execute()
 	}
 }

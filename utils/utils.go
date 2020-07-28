@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"github.com/goware/urlx"
 )
@@ -25,12 +24,19 @@ func ReplaceTilde(input string) string {
 }
 
 // ParseArgs Parses args.
-func ParseArgs(args []string) (string, error) {
-	if len(args) < 2 {
-		return "", constants.ErrTooFewArgs
+func ParseArgs(args []string) (string, string) {
+	command := ""
+	subCommand := ""
+
+	if len(args) > 1{
+		command = args[1]
 	}
 
-	return args[1], nil
+	if len(args) > 2 {
+		subCommand = args[2]
+	}
+
+	return command, subCommand
 }
 
 // ErrorHandler Handles errors with panic.
@@ -124,6 +130,10 @@ func ParseFile(handle string, url string, lines []string) []models.Tweet {
 	o := make([]models.Tweet, 0)
 
 	for _, line := range lines {
+		if strings.HasPrefix(line, "#"){
+			continue
+		}
+
 		parts := strings.Split(line, "\t")
 		if len(parts) < 2 {
 			continue
