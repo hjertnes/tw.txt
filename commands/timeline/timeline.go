@@ -3,6 +3,7 @@ package timeline
 
 import (
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -135,9 +136,16 @@ func (c *command) GetFeed(url string) ([]string, error) {
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 
 	if c.Config.CommonConfig.DiscloseIdentity {
-		req.Header.Set("User-Agent",
-			fmt.Sprintf("%s/%s (+%s; @%s)", "tw.txt", "0.0.1",
-				c.Config.CommonConfig.URL, c.Config.CommonConfig.Nick))
+		req.Header.Set(
+			"User-Agent",
+			fmt.Sprintf(
+				"%s/%s (+%s; @%s)",
+				constants.Name,
+				constants.Version,
+				c.Config.CommonConfig.URL,
+				c.Config.CommonConfig.Nick,
+			),
+		)
 	}
 
 	resp, err := client.Do(req)
