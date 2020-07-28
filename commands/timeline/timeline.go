@@ -90,7 +90,7 @@ func (c *command) PrintTweet(tweet models.Tweet, now time.Time) {
 	text := c.ShortenMentions(tweet.Message)
 
 	nick := output.Green(tweet.Handle)
-	if nick == c.Config.CommonConfig.Nick {
+	if tweet.Handle == c.Config.CommonConfig.Nick {
 		nick = output.BoldGreen(tweet.Handle)
 	}
 
