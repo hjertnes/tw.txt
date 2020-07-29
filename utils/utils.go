@@ -32,6 +32,7 @@ const (
 func ParseArgs(args []string) (string, string, []string) {
 	command := ""
 	subCommand := ""
+	r := make([]string, 0)
 
 	if len(args) > one {
 		command = args[one]
@@ -39,9 +40,10 @@ func ParseArgs(args []string) (string, string, []string) {
 
 	if len(args) > two {
 		subCommand = args[two]
+		r = args[two:]
 	}
 
-	return command, subCommand, args[two:]
+	return command, subCommand, r
 }
 
 // ErrorHandler Handles errors with panic.

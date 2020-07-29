@@ -132,7 +132,7 @@ func (c *command) FormatMention(nick, url, followednick string) string {
 
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) ([]string, error) {
-	client := http.Client{}
+	client := http.Client{Timeout: time.Second * 2}
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 

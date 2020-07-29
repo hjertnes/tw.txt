@@ -78,7 +78,7 @@ func (c *command) Execute() {
 
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) bool {
-	client := http.Client{Timeout: time.Minute}
+	client := http.Client{Timeout: time.Second * 2}
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 
