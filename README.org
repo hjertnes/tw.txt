@@ -8,9 +8,33 @@ Since more or less every user of [[twtxt]] have their own client I decided to ma
 - copy tw.txt somewhere in your PATH
 - I use EDITOR a lot, so make sure it is set properly 
 
+** Getting started
+1. Install tw.txt 
+2. Run tw.txt setup
+3. Copy config.yaml.sample to where you want it and edit it. I keep mine next to my twtxt.txt file 
+4. Edit ~/.tw.txt/config.yaml to point to where you put it 
+5. 🎉
+
 ** Configuration files
 - ~/.tw.txt/config.yaml -> tw.txt specific configuration
 - Most of the configuration will be a file like config.yaml.sample in this repo. The intent of it will be to have the stuff all twtxt clients need. To end the nightmare of one config per client we currently have.
+
+*** Internal Configuration File
+- Located at ~/.tw.txt/config.yaml
+- tw.txt setup will create it and open it in EDITOR if it doesn't exist
+- Currently has one setting: configfilelocation, it points to where you "Common Configuration File" is on your file system. 
+*** Common Configuration File
+- This config file is proposed as a common config file to avoid every twtxt client having their own config file with things like followers, where your twtxt file is, where your feed lives online etc. 
+- The problem with all of them having their own is that you need to maintain multiple files if you are using multiple clients or like testing stuff
+- It has the following settings: 
+- nick: your nickj
+- url: the url to your twtxt feed online
+- file: where the twtxt file is on your file system
+- discloseidentity: true / false - if your nick and url is included in User-Agent when fetching feeds. I strongle encourage it because it makes it a lot easier to discover eachother
+- following: a list of key value pairs of who you follow. 
+  handle: url
+
+
 
 ** Attribution
 - The output from the timeline command is heavily based on the one from [[twet]]

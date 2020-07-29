@@ -9,6 +9,8 @@ var ErrTooFewArgs = errors.New("too few command line arguments")
 // ErrConfigDoesNotExist Error for missing config file.
 var ErrConfigDoesNotExist = errors.New("config does not exist")
 
-//NameOfTheApp
+// Name Of The thing.
 const Name = "tw.txt"
+
+// Version of the app.
 const Version = "0.2.0"

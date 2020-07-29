@@ -3,7 +3,6 @@ package timeline
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -11,6 +10,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"git.sr.ht/~hjertnes/tw.txt/constants"
 
 	"golang.org/x/net/context"
 

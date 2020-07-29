@@ -1,9 +1,11 @@
 package main
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/commands/following"
-	"git.sr.ht/~hjertnes/tw.txt/commands/tweet"
 	"os"
+
+	"git.sr.ht/~hjertnes/tw.txt/commands/following"
+	"git.sr.ht/~hjertnes/tw.txt/commands/testfeeds"
+	"git.sr.ht/~hjertnes/tw.txt/commands/tweet"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/follow"
 	"git.sr.ht/~hjertnes/tw.txt/commands/unfollow"
@@ -65,6 +67,10 @@ func main() {
 		conf, err := config.New()
 		utils.ErrorHandler(err)
 		following.New(conf).Execute()
+	case "test-feeds":
+		conf, err := config.New()
+		utils.ErrorHandler(err)
+		testfeeds.New(conf).Execute()
 	default:
 		help.New().Execute()
 	}

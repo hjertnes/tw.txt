@@ -53,11 +53,10 @@ func (c *command) Execute(message string) {
 	utils.ErrorHandler(err)
 
 	lines := strings.Split(string(content), "\n")
-	if message != ""{
+	if message != "" {
 		lines = append(lines, fmt.Sprintf("%s\t%s", date, message))
 		lines = append(lines, "")
 	}
-
 
 	text := strings.Join(c.replaceAtMentions(removeEmptyLines(lines)), "\n")
 
