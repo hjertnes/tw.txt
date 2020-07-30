@@ -1,10 +1,9 @@
 package fetchfeeds
 
 import (
-	"testing"
-
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestFetchFeed(t *testing.T) {
