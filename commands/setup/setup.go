@@ -19,8 +19,8 @@ type command struct {
 }
 
 func (c *command) Execute(){
-	path := utils.ReplaceTilde("~/.tw.txt")
-	filename := fmt.Sprintf("%s/config.yaml", path)
+	path := utils.ReplaceTilde(config.GetConfigDir())
+	filename := utils.ReplaceTilde(config.GetConfigFilename())
 
 	if !utils.Exist(path){
 		err := os.MkdirAll(path, 0755)

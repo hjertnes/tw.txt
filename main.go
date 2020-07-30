@@ -2,28 +2,25 @@ package main
 
 import (
 	"os"
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
-
-	"git.sr.ht/~hjertnes/tw.txt/commands/following"
-	"git.sr.ht/~hjertnes/tw.txt/commands/testfeeds"
-	"git.sr.ht/~hjertnes/tw.txt/commands/tweet"
-
-	"git.sr.ht/~hjertnes/tw.txt/commands/follow"
-	"git.sr.ht/~hjertnes/tw.txt/commands/unfollow"
-
-	"git.sr.ht/~hjertnes/tw.txt/commands/help"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/edit"
+	"git.sr.ht/~hjertnes/tw.txt/commands/follow"
+	"git.sr.ht/~hjertnes/tw.txt/commands/following"
+	"git.sr.ht/~hjertnes/tw.txt/commands/help"
 	"git.sr.ht/~hjertnes/tw.txt/commands/setup"
+	"git.sr.ht/~hjertnes/tw.txt/commands/testfeeds"
 	"git.sr.ht/~hjertnes/tw.txt/commands/timeline"
+	"git.sr.ht/~hjertnes/tw.txt/commands/tweet"
+	"git.sr.ht/~hjertnes/tw.txt/commands/unfollow"
 	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
 const two = 2
 
-func main() {
-	command, subCommand, params := utils.ParseArgs(os.Args)
+func runProgram(args []string) {
+	command, subCommand, params := utils.ParseArgs(args)
 
 	switch command {
 	case "setup":
@@ -81,4 +78,8 @@ func main() {
 	default:
 		help.New().Execute()
 	}
+}
+
+func main() {
+	runProgram(os.Args)
 }

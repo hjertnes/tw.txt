@@ -3,6 +3,7 @@ package utils
 
 import (
 	"fmt"
+
 	"os"
 	"strings"
 	"time"
@@ -20,7 +21,7 @@ func Exist(path string) bool {
 // ReplaceTilde Replaces tilde with value of HOME.
 func ReplaceTilde(input string) string {
 	home := os.Getenv("HOME")
-	return strings.ReplaceAll(input, "~", home)
+	return strings.Replace(input, "~", home, 1)
 }
 
 const (

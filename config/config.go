@@ -30,8 +30,21 @@ type Config struct {
 	CommonConfig   *CommonConfig
 }
 
+func GetConfigDir() string {
+	if os.Getenv("TEST") != "" {
+		return "~/.tw.txt-test"
+	}
+	return "~/.tw.txt"
+}
+func GetConfigFilename() string {
+	if os.Getenv("TEST") != "" {
+		return "~/.tw.txt-test/config.yaml"
+	}
+	return "~/.tw.txt/config.yaml"
+}
+
 func readInternalConfig() (*InternalConfig, error) {
-	configFilename := utils.ReplaceTilde("~/.tw.txt/config.yaml")
+	configFilename := utils.ReplaceTilde(GetConfigFilename())
 	if !utils.Exist(configFilename) {
 		return nil, constants.ErrConfigDoesNotExist
 	}
@@ -57,7 +70,7 @@ func readInternalConfig() (*InternalConfig, error) {
 }
 
 func writeInternalConfig(conf *InternalConfig) error {
-	configFilename := utils.ReplaceTilde("~/.tw.txt/config.yaml")
+	configFilename := utils.ReplaceTilde(GetConfigFilename())
 	if !utils.Exist(configFilename) {
 		return constants.ErrConfigDoesNotExist
 	}
@@ -145,4 +158,30 @@ func Save(conf *Config) {
 
 	err = writeCommonConfig(conf)
 	utils.ErrorHandler(err)
+}
+
+func CreateConfigFiles(){
+	path := GetConfigDir()
+	filename := GetConfigFilename()
+
+	err := os.MkdirAll(path, 0755)
+	utils.ErrorHandler(err)
+
+	f, err := os.Create(filename)
+	utils.ErrorHandler(err)
+
+	content, err := yaml.Marshal(&InternalConfig{})
+	utils.ErrorHandler(err)
+
+	_, err = f.Write(content)
+	utils.ErrorHandler(err)
+
+	err = f.Close()
+	utils.ErrorHandler(err)
+
+}
+
+func DeleteConfigFiles(){
+	_ = os.Remove(GetConfigFilename())
+	_ = os.Remove(GetConfigDir())
 }
