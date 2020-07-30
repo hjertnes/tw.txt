@@ -1,8 +1,8 @@
 package main
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 	"os"
+	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/following"
 	"git.sr.ht/~hjertnes/tw.txt/commands/testfeeds"

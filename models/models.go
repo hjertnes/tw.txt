@@ -11,10 +11,10 @@ type Tweet struct {
 	Message   string
 }
 
-// Status is the status of a request to a feed.
+// Feed is the status of a request to a feed.
 type Feed struct {
 	Handle string
 	URL    string
 	Status bool
-	Body string
+	Body   string
 }

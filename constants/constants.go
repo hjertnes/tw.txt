@@ -1,7 +1,9 @@
 // Package constants contains constant values
 package constants
 
-import "errors"
+import (
+	"errors"
+)
 
 // ErrTooFewArgs Error for too few args.
 var ErrTooFewArgs = errors.New("too few command line arguments")
@@ -14,3 +16,6 @@ const Name = "tw.txt"
 
 // Version of the app.
 const Version = "0.3.0"
+
+// Two Constant for the number two.
+const Two = 2

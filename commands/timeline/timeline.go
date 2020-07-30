@@ -3,11 +3,12 @@ package timeline
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
+
+	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/models"
@@ -21,17 +22,15 @@ type Command interface {
 }
 
 type command struct {
-	config *config.Config
+	config     *config.Config
 	fetchFeeds fetchfeeds.Command
 }
-
-
 
 func (c *command) Execute(subCommand string) {
 	timeline := make([]models.Tweet, 0)
 	feeds := c.fetchFeeds.Execute("Fetching feeds...")
 
-	for _, feed := range feeds{
+	for _, feed := range feeds {
 		lines := strings.Split(feed.Body, "\n")
 		timeline = append(timeline, utils.ParseFile(feed.Handle, feed.URL, lines)...)
 	}

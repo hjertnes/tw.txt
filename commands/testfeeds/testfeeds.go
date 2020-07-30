@@ -3,6 +3,7 @@ package testfeeds
 
 import (
 	"fmt"
+
 	"git.sr.ht/~hjertnes/tw.txt/output"
 	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 )

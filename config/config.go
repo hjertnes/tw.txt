@@ -24,7 +24,7 @@ type InternalConfig struct {
 	ConfigFileLocation string
 }
 
-// config Type config contains CommonConfig and InternalConfig.
+// Config Type config contains CommonConfig and InternalConfig.
 type Config struct {
 	InternalConfig *InternalConfig
 	CommonConfig   *CommonConfig

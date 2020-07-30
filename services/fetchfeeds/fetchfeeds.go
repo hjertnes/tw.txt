@@ -27,7 +27,7 @@ type command struct {
 
 const maxfetchers = 50
 
-func (c *command) Execute(progressBarText string) []models.Feed{
+func (c *command) Execute(progressBarText string) []models.Feed {
 	feeds := c.config.CommonConfig.Following
 	feeds[c.config.CommonConfig.Nick] = c.config.CommonConfig.URL
 
@@ -60,7 +60,7 @@ func (c *command) Execute(progressBarText string) []models.Feed{
 		wg.Wait()
 		close(tweetsch)
 	}()
-	
+
 	result := make([]models.Feed, 0)
 
 	for feed := range tweetsch {
@@ -72,7 +72,7 @@ func (c *command) Execute(progressBarText string) []models.Feed{
 
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) (bool, string) {
-	client := http.Client{Timeout: time.Second * 2}
+	client := http.Client{Timeout: time.Second * constants.Two}
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 
@@ -95,9 +95,10 @@ func (c *command) GetFeed(url string) (bool, string) {
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil{
+	if err != nil {
 		body = []byte("")
 	}
+
 	_ = resp.Body.Close()
 
 	return resp.StatusCode == http.StatusOK, string(body)
