@@ -11,15 +11,15 @@ type Command interface {
 }
 
 type command struct {
-	Config *config.Config
+	config *config.Config
 }
 
 func (c *command) Execute(nick string, url string) {
-	c.Config.CommonConfig.Following[nick] = url
-	config.Save(c.Config)
+	c.config.CommonConfig.Following[nick] = url
+	config.Save(c.config)
 }
 
 // New is constructor.
 func New(conf *config.Config) Command {
-	return &command{Config: conf}
+	return &command{config: conf}
 }

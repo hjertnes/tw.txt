@@ -16,7 +16,7 @@ type Command interface {
 }
 
 type command struct {
-	Config *config.Config
+	config *config.Config
 }
 
 func (c *command) Execute(subCommand string) {
@@ -28,9 +28,9 @@ func (c *command) Execute(subCommand string) {
 	case "internal-config":
 		cmd.Args = append(cmd.Args, "~/tw.txt/config.yaml")
 	case "common-config":
-		cmd.Args = append(cmd.Args, c.Config.InternalConfig.ConfigFileLocation)
+		cmd.Args = append(cmd.Args, c.config.InternalConfig.ConfigFileLocation)
 	default:
-		cmd.Args = append(cmd.Args, c.Config.CommonConfig.File)
+		cmd.Args = append(cmd.Args, c.config.CommonConfig.File)
 	}
 
 	err := cmd.Start()
@@ -39,5 +39,5 @@ func (c *command) Execute(subCommand string) {
 
 // New creates new Command.
 func New(conf *config.Config) Command {
-	return &command{Config: conf}
+	return &command{config: conf}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 	"os"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/following"
@@ -30,7 +31,10 @@ func main() {
 	case "timeline":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
-		timeline.New(conf).Execute(subCommand)
+
+		ff := fetchfeeds.New(conf)
+
+		timeline.New(conf, ff).Execute(subCommand)
 	case "edit":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
@@ -70,7 +74,10 @@ func main() {
 	case "test-feeds":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
-		testfeeds.New(conf).Execute()
+
+		ff := fetchfeeds.New(conf)
+
+		testfeeds.New(ff).Execute()
 	default:
 		help.New().Execute()
 	}

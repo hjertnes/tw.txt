@@ -13,16 +13,16 @@ type Command interface {
 }
 
 type command struct {
-	Config *config.Config
+	config *config.Config
 }
 
 func (c *command) Execute() {
-	for handle, url := range c.Config.CommonConfig.Following {
+	for handle, url := range c.config.CommonConfig.Following {
 		fmt.Printf("@%s %s\n", handle, url)
 	}
 }
 
 // New is constructor.
 func New(conf *config.Config) Command {
-	return &command{Config: conf}
+	return &command{config: conf}
 }

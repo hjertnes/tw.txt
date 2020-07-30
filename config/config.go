@@ -19,12 +19,12 @@ type CommonConfig struct {
 	DiscloseIdentity bool
 }
 
-// InternalConfig Config file used by this client: located at ~/.tw.txt/config.yaml.
+// InternalConfig config file used by this client: located at ~/.tw.txt/config.yaml.
 type InternalConfig struct {
 	ConfigFileLocation string
 }
 
-// Config Type Config contains CommonConfig and InternalConfig.
+// config Type config contains CommonConfig and InternalConfig.
 type Config struct {
 	InternalConfig *InternalConfig
 	CommonConfig   *CommonConfig
