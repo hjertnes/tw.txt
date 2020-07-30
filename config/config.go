@@ -146,8 +146,6 @@ func New() (*Config, error) {
 		return nil, err
 	}
 
-	fmt.Println("yo")
-
 	common, err := readCommonConfig(internal.ConfigFileLocation)
 	if err != nil {
 		return nil, err

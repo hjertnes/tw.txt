@@ -1,7 +1,8 @@
 package follow
 
 import (
-	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/config"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
@@ -11,8 +12,7 @@ func TestTest(t *testing.T) {
 
 	config.CreateConfigFiles()
 
-	c, err := config.New()
-	fmt.Println(err)
+	c, _ := config.New()
 
 	New(c).Execute("a", "b")
 	assert.Equal(t, "b", c.CommonConfig.Following["a"])
