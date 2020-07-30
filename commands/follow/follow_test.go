@@ -2,13 +2,11 @@ package follow
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
 
-func TestTest(t *testing.T){
+func TestTest(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
 
 	config.CreateConfigFiles()
@@ -20,5 +18,6 @@ func TestTest(t *testing.T){
 	assert.Equal(t, "b", c.CommonConfig.Following["a"])
 
 	config.DeleteConfigFiles()
+
 	_ = os.Setenv("TEST", "")
 }

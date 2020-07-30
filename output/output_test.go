@@ -1,7 +1,6 @@
 package output
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
 
 )

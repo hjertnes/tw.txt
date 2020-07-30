@@ -2,12 +2,12 @@ package utils
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/constants"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 	"time"
 
+	"git.sr.ht/~hjertnes/tw.txt/constants"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestExist(t *testing.T) {

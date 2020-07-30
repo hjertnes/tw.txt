@@ -31,20 +31,23 @@ type Config struct {
 	CommonConfig   *CommonConfig
 }
 
+// GetConfigDir Get Config Dir.
 func GetConfigDir() string {
 	if os.Getenv("TEST") != "" {
 		return "~/.tw.txt-test"
 	}
+
 	return "~/.tw.txt"
 }
+
+// GetConfigFilename Get Config Filename.
 func GetConfigFilename() string {
 	if os.Getenv("TEST") != "" {
 		return "~/.tw.txt-test/config.yaml"
 	}
+
 	return "~/.tw.txt/config.yaml"
 }
-
-
 
 func writeInternalConfig(conf *InternalConfig) error {
 	configFilename := utils.ReplaceTilde(GetConfigFilename())
@@ -85,30 +88,30 @@ func writeCommonConfig(conf *Config) error {
 }
 
 func readInternalConfig() (*InternalConfig, error) {
-		configFilename := utils.ReplaceTilde(GetConfigFilename())
-		if !utils.Exist(configFilename) {
-			return nil, constants.ErrConfigDoesNotExist
-		}
-
-		f, err := os.OpenFile(configFilename, os.O_RDWR, 0600)
-		if err != nil {
-			return nil, err
-		}
-
-		content, err := ioutil.ReadAll(f)
-		if err != nil {
-			return nil, err
-		}
-
-		config := &InternalConfig{}
-
-		err = yaml.Unmarshal(content, config)
-		if err != nil {
-			return nil, err
-		}
-
-		return config, nil
+	configFilename := utils.ReplaceTilde(GetConfigFilename())
+	if !utils.Exist(configFilename) {
+		return nil, constants.ErrConfigDoesNotExist
 	}
+
+	f, err := os.OpenFile(configFilename, os.O_RDWR, 0600)
+	if err != nil {
+		return nil, err
+	}
+
+	content, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+
+	config := &InternalConfig{}
+
+	err = yaml.Unmarshal(content, config)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
 
 func readCommonConfig(filename string) (*CommonConfig, error) {
 	configFilename := utils.ReplaceTilde(filename)
@@ -165,13 +168,14 @@ func Save(conf *Config) {
 	utils.ErrorHandler(err)
 }
 
-func CreateConfigFiles(){
+// CreateConfigFiles Creates config files for tests.
+func CreateConfigFiles() {
 	path := utils.ReplaceTilde(GetConfigDir())
 	filename := utils.ReplaceTilde(GetConfigFilename())
 	filename2 := fmt.Sprintf("%s/config2.yaml", path)
 	filename3 := fmt.Sprintf("%s/twtxt.txt", path)
 
-	err := os.MkdirAll(path, 0755)
+	err := os.MkdirAll(path, 0700)
 	utils.ErrorHandler(err)
 
 	f, err := os.Create(filename)
@@ -192,7 +196,7 @@ func CreateConfigFiles(){
 	utils.ErrorHandler(err)
 
 	content2, err := yaml.Marshal(&CommonConfig{
-		File: utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", GetConfigDir())),
+		File:      utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", GetConfigDir())),
 		Following: map[string]string{"hjertnes": "https://hjertnes.social/twtxt.txt"},
 	})
 	utils.ErrorHandler(err)
@@ -211,12 +215,12 @@ func CreateConfigFiles(){
 
 	err = f.Close()
 	utils.ErrorHandler(err)
-
 }
 
-func DeleteConfigFiles(){
-//	_ = os.Remove(utils.ReplaceTilde(GetConfigFilename()))
-//_ = os.Remove(utils.ReplaceTilde(fmt.Sprintf("%s/config2.yaml", GetConfigDir())))
-//_ = os.Remove(utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", GetConfigDir())))
+// DeleteConfigFiles deletes config files for tests.
+func DeleteConfigFiles() {
+	//	_ = os.Remove(utils.ReplaceTilde(GetConfigFilename()))
+	//_ = os.Remove(utils.ReplaceTilde(fmt.Sprintf("%s/config2.yaml", GetConfigDir())))
+	//_ = os.Remove(utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", GetConfigDir())))
 	_ = os.RemoveAll(utils.ReplaceTilde(GetConfigDir()))
 }

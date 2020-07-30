@@ -2,13 +2,11 @@ package tweet
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"os"
 	"testing"
 )
 
-func TestTest(t *testing.T){
+func TestTest(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
 
 	config.CreateConfigFiles()
@@ -25,7 +23,6 @@ func TestTest(t *testing.T){
 			File: utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", config.GetConfigDir())),
 		},
 	}
-
 
 	New(conf).Execute("@hjertnes test")
 

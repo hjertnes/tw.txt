@@ -1,12 +1,13 @@
 package testfeeds
 
 import (
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
-	"testing"
 )
 
-func TestTest(t *testing.T){
+func TestTest(t *testing.T) {
 	conf := &config.Config{
 		CommonConfig: &config.CommonConfig{
 			Nick:             "hjertnes",
@@ -21,5 +22,4 @@ func TestTest(t *testing.T){
 	ff := fetchfeeds.New(conf)
 
 	New(ff).Execute()
-
 }

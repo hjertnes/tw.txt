@@ -1,43 +1,48 @@
 package main
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"os"
 	"testing"
+
+	"git.sr.ht/~hjertnes/tw.txt/config"
 )
 
-func TestTest(t *testing.T){
-	_ = os.Setenv("TEST", "true")
+func TestTest(t *testing.T) {
+	t.Run("", func(t *testing.T) {
+		_ = os.Setenv("TEST", "true")
 
-	runProgram([]string{""})
-	runProgram([]string{"", "setup"})
+		runProgram([]string{""})
 
-	config.DeleteConfigFiles()
+		runProgram([]string{"", "setup"})
 
-	config.CreateConfigFiles()
+		config.DeleteConfigFiles()
 
-	runProgram([]string{"", "timeline"})
+		config.CreateConfigFiles()
 
-	runProgram([]string{"", "edit"})
+		runProgram([]string{"", "timeline"})
 
-	runProgram([]string{"", "follow"})
+		runProgram([]string{"", "edit"})
 
-	runProgram([]string{"", "follow", "a", "b"})
+		runProgram([]string{"", "follow"})
 
-	runProgram([]string{"", "unfollow"})
+		runProgram([]string{"", "follow", "a", "b"})
 
-	runProgram([]string{"", "unfollow", "a", "b"})
+		runProgram([]string{"", "unfollow"})
 
-	runProgram([]string{"", "tweet"})
+		runProgram([]string{"", "unfollow", "a", "b"})
 
-	runProgram([]string{"", "tweet", "a"})
+		runProgram([]string{"", "tweet"})
 
-	runProgram([]string{"", "replace-mentions"})
+		runProgram([]string{"", "tweet", "a"})
 
-	runProgram([]string{"", "following"})
+		runProgram([]string{"", "replace-mentions"})
 
-	runProgram([]string{"", "test-feeds"})
+		runProgram([]string{"", "following"})
 
-	config.DeleteConfigFiles()
-	_ = os.Setenv("TEST", "")
+		runProgram([]string{"", "test-feeds"})
+
+		config.DeleteConfigFiles()
+
+		_ = os.Setenv("TEST", "")
+	})
 }
