@@ -22,6 +22,7 @@ func TestGetConfigFile(t *testing.T) {
 }
 
 func TestNew(t *testing.T){
+	_ = os.Setenv("TEST", "")
 	c, _ := New()
 
 	Save(c)
@@ -30,10 +31,11 @@ func TestNew(t *testing.T){
 
 func TestCreateConfigFiles(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
-	assert.False(t, utils.Exist(GetConfigDir()))
-	CreateConfigFiles()
-	assert.True(t, utils.Exist(GetConfigDir()))
 	DeleteConfigFiles()
-	assert.False(t, utils.Exist(GetConfigDir()))
+	assert.False(t, utils.Exist(utils.ReplaceTilde(GetConfigDir())))
+	CreateConfigFiles()
+	assert.True(t, utils.Exist(utils.ReplaceTilde(GetConfigDir())))
+	DeleteConfigFiles()
+	assert.False(t, utils.Exist(utils.ReplaceTilde(GetConfigDir())))
 	_ = os.Setenv("TEST", "")
 }

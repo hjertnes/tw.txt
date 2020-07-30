@@ -161,8 +161,8 @@ func Save(conf *Config) {
 }
 
 func CreateConfigFiles(){
-	path := GetConfigDir()
-	filename := GetConfigFilename()
+	path := utils.ReplaceTilde(GetConfigDir())
+	filename := utils.ReplaceTilde(GetConfigFilename())
 
 	err := os.MkdirAll(path, 0755)
 	utils.ErrorHandler(err)
@@ -182,6 +182,6 @@ func CreateConfigFiles(){
 }
 
 func DeleteConfigFiles(){
-	_ = os.Remove(GetConfigFilename())
-	_ = os.Remove(GetConfigDir())
+	_ = os.Remove(utils.ReplaceTilde(GetConfigFilename()))
+	_ = os.Remove(utils.ReplaceTilde(GetConfigDir()))
 }
