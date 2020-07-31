@@ -40,7 +40,7 @@ func (c *command) Execute(subCommand string) {
 	})
 
 	for i, tweet := range timeline {
-		if i > len(timeline)-1000 || subCommand == "full" {
+		if i > len(timeline)-250 || subCommand == "full" {
 			c.PrintTweet(tweet, time.Now())
 		}
 	}

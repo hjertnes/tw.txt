@@ -17,7 +17,7 @@ func (c *command) Execute() {
 	fmt.Println("\t tw.txt command")
 	fmt.Println()
 	fmt.Println("Commands:")
-	fmt.Println("\ttimeline - prints last 1000 items in your timeline")
+	fmt.Println("\ttimeline - prints last 250 items in your timeline")
 	fmt.Println("\t\t full - prints your entire timeline")
 	fmt.Println("\tedit - opens your twtxt in $EDITOR")
 	fmt.Println("\t\t twtxt - opens your twtxt in $EDITOR")

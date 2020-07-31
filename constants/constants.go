@@ -15,7 +15,7 @@ var ErrConfigDoesNotExist = errors.New("config does not exist")
 const Name = "tw.txt"
 
 // Version of the app.
-const Version = "0.5.1"
+const Version = "0.5.2"
 
 // Two Constant for the number two.
 const Two = 2
