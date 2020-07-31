@@ -57,7 +57,7 @@ func (c *command) replaceAtMentions(items []string) []string {
 			line = strings.ReplaceAll(
 				line,
 				fmt.Sprintf("@%s", match[1]),
-				fmt.Sprintf("@<%s, %s>", match[1], c.config.CommonConfig.Following[match[1]]))
+				fmt.Sprintf("@<%s %s>", match[1], c.config.CommonConfig.Following[match[1]]))
 		}
 
 		result = append(result, line)
