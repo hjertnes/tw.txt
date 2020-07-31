@@ -47,15 +47,17 @@ func (c *command) replaceAtMentions(items []string) []string {
 	for _, line := range items {
 		re1 := regexp.MustCompile(`\s@(\w*)\s`)
 		re2 := regexp.MustCompile(`\s@(\w*)$`)
+		re3 := regexp.MustCompile(`@(\w*)\s`)
 
 		matches := re1.FindAllStringSubmatch(line, -1)
 		matches = append(matches, re2.FindAllStringSubmatch(line, -1)...)
+		matches = append(matches, re3.FindAllStringSubmatch(line, -1)...)
 
 		for _, match := range matches {
 			line = strings.ReplaceAll(
 				line,
-				match[1],
-				fmt.Sprintf("<%s, %s>", match[1], c.config.CommonConfig.Following[match[1]]))
+				fmt.Sprintf("@%s", match[1]),
+				fmt.Sprintf("@<%s, %s>", match[1], c.config.CommonConfig.Following[match[1]]))
 		}
 
 		result = append(result, line)
