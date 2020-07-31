@@ -2,6 +2,8 @@ package tweet
 
 import (
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"os"
 	"testing"
 )

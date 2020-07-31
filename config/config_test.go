@@ -1,6 +1,8 @@
 package config
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/utils"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )

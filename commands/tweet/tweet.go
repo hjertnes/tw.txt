@@ -4,6 +4,7 @@ package tweet
 import (
 	"fmt"
 	"io/ioutil"
+	"regexp"
 	"strings"
 	"time"
 
@@ -32,12 +33,29 @@ func removeEmptyLines(items []string) []string {
 	return result
 }
 
+// func (c *command) replaceReFunc(s string) string {
+// ss := strings.Replace(s, "@", "", 1)
+
+//return strings.Replace(s, ss, fmt.Sprintf("@<%s, %s>", ss, c.config.CommonConfig.Following[ss]), 1)
+//}
+
 func (c *command) replaceAtMentions(items []string) []string {
 	result := make([]string, 0)
 
+	c.config.CommonConfig.Following[c.config.CommonConfig.Nick] = c.config.CommonConfig.URL
+
 	for _, line := range items {
-		for handle, url := range c.config.CommonConfig.Following {
-			line = strings.ReplaceAll(line, fmt.Sprintf("@%s", handle), fmt.Sprintf("@<%s %s>", handle, url))
+		re1 := regexp.MustCompile(`\s@(\w*)\s`)
+		re2 := regexp.MustCompile(`\s@(\w*)$`)
+
+		matches := re1.FindAllStringSubmatch(line, -1)
+		matches = append(matches, re2.FindAllStringSubmatch(line, -1)...)
+
+		for _, match := range matches {
+			line = strings.ReplaceAll(
+				line,
+				match[1],
+				fmt.Sprintf("<%s, %s>", match[1], c.config.CommonConfig.Following[match[1]]))
 		}
 
 		result = append(result, line)

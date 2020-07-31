@@ -1,6 +1,7 @@
 package edit
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"testing"
 )
 

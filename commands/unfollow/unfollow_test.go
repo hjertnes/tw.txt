@@ -1,6 +1,8 @@
 package unfollow
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/config"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 )
