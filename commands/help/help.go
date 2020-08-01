@@ -30,6 +30,7 @@ func (c *command) Execute() {
 	fmt.Println("\treplace-mentions - will replace all @handle with @<handle url>")
 	fmt.Println("\tfollowing - lists who you follow")
 	fmt.Println("\ttest-feeds - checks for feeds that doesn't return 200 OK")
+	fmt.Println("\thtml - export timeline as a html file")
 }
 
 // New is the constructor.

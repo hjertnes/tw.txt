@@ -15,6 +15,9 @@ Since more or less every user of [[twtxt]] have their own client I decided to ma
 4. Edit ~/.tw.txt/config.yaml to point to where you put it 
 5. 🎉
 
+** HTML export
+If you use it you have to add a template somewhere: copy the template.html to a place and set the config in the InternalConfig
+
 ** Configuration files
 - ~/.tw.txt/config.yaml -> tw.txt specific configuration
 - Most of the configuration will be a file like config.yaml.sample in this repo. The intent of it will be to have the stuff all twtxt clients need. To end the nightmare of one config per client we currently have.

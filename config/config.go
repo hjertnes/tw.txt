@@ -23,6 +23,7 @@ type CommonConfig struct {
 // InternalConfig config file used by this client: located at ~/.tw.txt/config.yaml.
 type InternalConfig struct {
 	ConfigFileLocation string
+	TemplateFileLocation string
 }
 
 // Config Type config contains CommonConfig and InternalConfig.

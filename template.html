@@ -1,0 +1,14 @@
+<html lang="">
+<head>
+    <title>Hjertnes' twtxt timeline</title>
+</head>
+<body>
+<h1>Hjertnes' twtxt timeline</h1>
+{{ range . }}
+    <p>
+        <a href="{{ .URL }}">@{{ .Handle }}</a> on {{ .Timestamp.Format "2006-01-02T15:04:05" }} <br />
+        {{ .Message }}
+    </p>
+{{ end }}
+</body>
+</html>

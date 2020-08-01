@@ -1,6 +1,7 @@
 package main
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/commands/html"
 	"os"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/edit"
@@ -25,6 +26,12 @@ func runProgram(args []string) {
 	switch command {
 	case "setup":
 		setup.New().Execute()
+	case "html":
+		conf , err := config.New()
+		utils.ErrorHandler(err)
+		ff := fetchfeeds.New(conf)
+
+		html.New(conf, ff).Execute()
 	case "timeline":
 		conf, err := config.New()
 		utils.ErrorHandler(err)

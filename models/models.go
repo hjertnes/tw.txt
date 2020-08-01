@@ -1,7 +1,10 @@
 // Package models contains models
 package models
 
-import "time"
+import (
+	"html/template"
+	"time"
+)
 
 // Tweet is the type for a line of a twtxt file.
 type Tweet struct {
@@ -9,6 +12,13 @@ type Tweet struct {
 	Handle    string
 	URL       string
 	Message   string
+}
+
+type HTMLTweet struct {
+	Timestamp time.Time
+	Handle    string
+	URL       string
+	Message   template.HTML
 }
 
 // Feed is the status of a request to a feed.
