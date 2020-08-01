@@ -4,7 +4,7 @@
 </head>
 <body>
 <h1>Hjertnes' twtxt timeline</h1>
-{{ range . }}
+{{ range .Timeline }}
     <p>
         <a href="{{ .URL }}">@{{ .Handle }}</a> on {{ .Timestamp.Format "2006-01-02T15:04:05" }} <br />
         {{ .Message }}

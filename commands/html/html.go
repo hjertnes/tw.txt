@@ -8,9 +8,9 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 	"html/template"
 	"os"
-	"regexp"
 	"sort"
 	"strings"
+	"time"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/models"
@@ -45,7 +45,7 @@ func (c *command) Execute() {
 	t, err := template.ParseFiles(utils.ReplaceTilde(c.config.InternalConfig.TemplateFileLocation))
 	utils.ErrorHandler(err)
 
-	if !utils.Exist("timeline.html"){
+	if !utils.Exist("timeline.html") {
 		f, err := os.Create("timeline.html")
 		utils.ErrorHandler(err)
 		err = f.Close()
@@ -56,11 +56,12 @@ func (c *command) Execute() {
 
 	utils.ErrorHandler(err)
 
-	err = t.Execute(f, newTimeline)
+	err = t.Execute(f, models.HTMLModel{
+		Timestamp: time.Now().UTC(),
+		Timeline:  newTimeline,
+	})
 	utils.ErrorHandler(err)
 }
-
-var r1 = regexp.MustCompile(`@<(\w*) (.*)>`)
 
 func rewriteOrgModeLinks(input string) string{
 	for {
@@ -80,17 +81,36 @@ func rewriteOrgModeLinks(input string) string{
 	return input
 }
 
+func rewriteMentions(input string) string{
+	for {
+		if !strings.Contains(input, "@<"){
+			break
+		}
+
+		parts := strings.Split(strings.Split(strings.Split(input, "@<")[1], ">")[0], " ")
+
+		if len(parts) != 2{
+			break
+		}
+
+		input = strings.ReplaceAll(input, fmt.Sprintf("@<%s %s>", parts[0], parts[1]), fmt.Sprintf(`<a href="%s">@%s</a>`, parts[1], parts[0]))
+
+	}
+
+	return input
+}
+
 
 
 func replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
 	result := make([]models.HTMLTweet, 0)
 
 	for _, tweet := range timeline {
-		tweet.Message = r1.ReplaceAllString(tweet.Message, `<a href="$2">@$1</a>`)
 		tweet.Message = strings.ReplaceAll(tweet.Message, "<script>", "script")
 		tweet.Message = strings.ReplaceAll(tweet.Message, "</script>", "script")
 
 
+		tweet.Message = rewriteMentions(tweet.Message)
 		tweet.Message = rewriteOrgModeLinks(tweet.Message)
 
 		html := markdown.ToHTML([]byte(tweet.Message), parser.New(), nil)

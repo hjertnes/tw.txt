@@ -28,3 +28,8 @@ type Feed struct {
 	Status bool
 	Body   string
 }
+
+type HTMLModel struct {
+	Timestamp time.Time
+	Timeline []HTMLTweet
+}
