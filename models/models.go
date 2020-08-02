@@ -19,6 +19,7 @@ type HTMLTweet struct {
 	Handle    string
 	URL       string
 	Message   template.HTML
+	Classes string
 }
 
 // Feed is the status of a request to a feed.

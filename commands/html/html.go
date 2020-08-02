@@ -36,7 +36,7 @@ func (c *command) Execute() {
 		timeline = append(timeline, utils.ParseFile(feed.Handle, feed.URL, lines)...)
 	}
 
-	newTimeline := replaceStuff(timeline)
+	newTimeline := c.replaceStuff(timeline)
 
 	sort.SliceStable(newTimeline, func(i int, j int) bool {
 		return newTimeline[j].Timestamp.Before(newTimeline[i].Timestamp)
@@ -102,10 +102,20 @@ func rewriteMentions(input string) string{
 
 
 
-func replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
+func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
 	result := make([]models.HTMLTweet, 0)
 
 	for _, tweet := range timeline {
+		classes := make(map[string]string, 0)
+
+		if c.config.CommonConfig.Nick == tweet.Handle{
+			classes["myself"] = "myself"
+		}
+
+		if strings.Contains(tweet.Message, fmt.Sprintf("@<%s %s>", c.config.CommonConfig.Nick, c.config.CommonConfig.URL)){
+			classes["myself"] = "myself"
+		}
+
 		tweet.Message = strings.ReplaceAll(tweet.Message, "<script>", "script")
 		tweet.Message = strings.ReplaceAll(tweet.Message, "</script>", "script")
 
@@ -120,10 +130,27 @@ func replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
 			Handle: tweet.Handle,
 			URL: tweet.URL,
 			Message: template.HTML(html),
+			Classes: mapToString(classes),
 		})
 	}
 
 	return result
+}
+
+func mapToString(input map[string]string) string{
+	res := ""
+
+	for key, _ := range input {
+		if !strings.Contains(res, key){
+			if res == ""{
+				res = key
+			} else {
+				res = fmt.Sprintf("%s, %s", res, key)
+			}
+		}
+	}
+
+	return res
 }
 
 // New creates new Command.
