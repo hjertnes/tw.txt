@@ -109,11 +109,11 @@ func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
 		classes := make(map[string]string, 0)
 
 		if c.config.CommonConfig.Nick == tweet.Handle{
-			classes["myself"] = "by-myself"
+			classes["by-myself"] = "by-myself"
 		}
 
 		if strings.Contains(tweet.Message, fmt.Sprintf("@<%s %s>", c.config.CommonConfig.Nick, c.config.CommonConfig.URL)){
-			classes["myself"] = "mentioned"
+			classes["mentioned"] = "mentioned"
 		}
 
 		tweet.Message = strings.ReplaceAll(tweet.Message, "<script>", "script")
