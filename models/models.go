@@ -24,10 +24,18 @@ type HTMLTweet struct {
 
 // Feed is the status of a request to a feed.
 type Feed struct {
+	ContentLength int
+	LastModified time.Time
 	Handle string
 	URL    string
 	Status bool
 	Body   string
+}
+
+type FeedHead struct {
+	ContentLength int
+	LastModified time.Time
+	URL    string
 }
 
 type HTMLModel struct {

@@ -1,5 +1,5 @@
-// Package fetchfeeds fetches feeds
-package fetchfeeds
+// Package getfeeds fetches feeds
+package getfeeds
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 
 // Command is the publicly exposed interface.
 type Command interface {
-	Execute(progressBarText string) []models.Feed
+	Execute(feeds map[string]string) []models.Feed
 }
 
 type command struct {
@@ -27,11 +27,9 @@ type command struct {
 
 const maxfetchers = 50
 
-func (c *command) Execute(progressBarText string) []models.Feed {
-	feeds := c.config.CommonConfig.Following
-	feeds[c.config.CommonConfig.Nick] = c.config.CommonConfig.URL
+func (c *command) Execute(feeds map[string]string) []models.Feed {
 
-	bar := progressbar.Default(int64(len(feeds)), progressBarText)
+	bar := progressbar.Default(int64(len(feeds)), "Loading...")
 
 	tweetsch := make(chan models.Feed, len(feeds))
 

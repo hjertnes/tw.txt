@@ -2,6 +2,9 @@ package main
 
 import (
 	"git.sr.ht/~hjertnes/tw.txt/commands/html"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/cache"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/getfeeds"
 	"os"
 
 	"git.sr.ht/~hjertnes/tw.txt/commands/edit"
@@ -14,7 +17,7 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/commands/tweet"
 	"git.sr.ht/~hjertnes/tw.txt/commands/unfollow"
 	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/headfeeds"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
@@ -27,18 +30,28 @@ func runProgram(args []string) {
 	case "setup":
 		setup.New().Execute()
 	case "html":
-		conf , err := config.New()
+		conf, err := config.New()
 		utils.ErrorHandler(err)
-		ff := fetchfeeds.New(conf)
 
-		html.New(conf, ff).Execute()
+		c, err := cache.New()
+
+		hf := headfeeds.New(conf)
+		gf := getfeeds.New(conf)
+		lf := loadfeeds.New(conf, c, hf, gf)
+
+		html.New(conf, lf).Execute()
 	case "timeline":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
 
-		ff := fetchfeeds.New(conf)
+		c, err := cache.New()
+		utils.ErrorHandler(err)
 
-		timeline.New(conf, ff).Execute(subCommand)
+		hf := headfeeds.New(conf)
+		gf := getfeeds.New(conf)
+		lf := loadfeeds.New(conf, c, hf, gf)
+
+		timeline.New(conf, lf).Execute(subCommand)
 	case "edit":
 		conf, err := config.New()
 		utils.ErrorHandler(err)
@@ -79,9 +92,13 @@ func runProgram(args []string) {
 		conf, err := config.New()
 		utils.ErrorHandler(err)
 
-		ff := fetchfeeds.New(conf)
+		c, err := cache.New()
 
-		testfeeds.New(ff).Execute()
+		hf := headfeeds.New(conf)
+		gf := getfeeds.New(conf)
+		lf := loadfeeds.New(conf, c, hf, gf)
+
+		testfeeds.New(lf).Execute()
 	default:
 		help.New().Execute()
 	}

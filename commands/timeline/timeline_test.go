@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/headfeeds"
 )
 
 func TestTest(t *testing.T) {
@@ -18,7 +18,7 @@ func TestTest(t *testing.T) {
 			},
 		},
 	}
-	ff := fetchfeeds.New(conf)
+	ff := headfeeds.New(conf)
 
 	New(conf, ff).Execute("")
 	New(conf, ff).Execute("full")

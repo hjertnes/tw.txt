@@ -3,9 +3,9 @@ package testfeeds
 
 import (
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
 
 	"git.sr.ht/~hjertnes/tw.txt/output"
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 )
 
 // Command is the publicly exposed interface.
@@ -14,11 +14,11 @@ type Command interface {
 }
 
 type command struct {
-	fetchFeeds fetchfeeds.Command
+	loadFeeds loadfeeds.Service
 }
 
 func (c *command) Execute() {
-	statuses := c.fetchFeeds.Execute("Testing feeds...")
+	statuses := c.loadFeeds.Execute()
 
 	for _, status := range statuses {
 		if status.Status {
@@ -30,6 +30,6 @@ func (c *command) Execute() {
 }
 
 // New creates new Command.
-func New(ff fetchfeeds.Command) Command {
-	return &command{fetchFeeds: ff}
+func New(lf loadfeeds.Service) Command {
+	return &command{loadFeeds: lf}
 }

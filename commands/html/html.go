@@ -4,7 +4,7 @@ package html
 import (
 	"fmt"
 	"git.sr.ht/~hjertnes/patterns"
-	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
 	"html/template"
@@ -27,12 +27,12 @@ type Command interface {
 
 type command struct {
 	config     *config.Config
-	fetchFeeds fetchfeeds.Command
+	loadFeeds loadfeeds.Service
 }
 
 func (c *command) Execute() {
 	timeline := make([]models.Tweet, 0)
-	feeds := c.fetchFeeds.Execute("Fetching feeds...")
+	feeds := c.loadFeeds.Execute()
 
 	for _, feed := range feeds {
 		lines := strings.Split(feed.Body, "\n")
@@ -157,6 +157,6 @@ func mapToString(input map[string]string) string{
 }
 
 // New creates new Command.
-func New(conf *config.Config, ff fetchfeeds.Command) Command {
-	return &command{config: conf, fetchFeeds: ff}
+func New(conf *config.Config, lf loadfeeds.Service) Command{
+	return &command{config: conf, loadFeeds: lf}
 }

@@ -218,8 +218,5 @@ func CreateConfigFiles() {
 
 // DeleteConfigFiles deletes config files for tests.
 func DeleteConfigFiles() {
-	//	_ = os.Remove(utils.ReplaceTilde(GetConfigFilename()))
-	//_ = os.Remove(utils.ReplaceTilde(fmt.Sprintf("%s/config2.yaml", GetConfigDir())))
-	//_ = os.Remove(utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", GetConfigDir())))
 	_ = os.RemoveAll(utils.ReplaceTilde(GetConfigDir()))
 }
