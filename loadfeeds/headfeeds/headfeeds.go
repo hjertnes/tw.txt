@@ -65,8 +65,17 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 			continue
 		}
 
-		lm, _ := time.Parse(time.RFC1123, feed.Header["Last-Modified"][0])
-		cl, _ := strconv.Atoi(feed.Request.Header["Content-Length"][0])
+		lm := time.Now()
+		cl := 0
+
+		if feed.Header["Last-Modified"] != nil{
+			lm, _ = time.Parse(time.RFC1123, feed.Header["Last-Modified"][0])
+		}
+
+		if feed.Header["Content-Length"] != nil{
+			cl, _ = strconv.Atoi(feed.Header["Content-Length"][0])
+		}
+
 
 		result = append(result, models.FeedHead{
 			URL: feed.Request.URL.String(),

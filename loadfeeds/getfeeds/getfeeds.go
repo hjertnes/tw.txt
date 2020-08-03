@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -42,9 +43,20 @@ func (c *command) Execute(feeds map[string]string) []models.Feed {
 		fetchers <- struct{}{}
 
 		go func(handle string, url string) {
-			status, body := c.GetFeed(url)
+			status, body, headers := c.GetFeed(url)
 
-			tweetsch <- models.Feed{Handle: handle, Status: status, URL: url, Body: body}
+			lm := time.Now()
+			cl := 0
+
+			if headers["Last-Modified"] != nil{
+				lm, _ = time.Parse(time.RFC1123, headers["Last-Modified"][0])
+			}
+
+			if headers["Content-Length"] != nil{
+				cl, _ = strconv.Atoi(headers["Content-Length"][0])
+			}
+
+			tweetsch <- models.Feed{Handle: handle, Status: status, URL: url, Body: body, ContentLength: cl, LastModified: lm}
 
 			<-fetchers
 
@@ -69,7 +81,7 @@ func (c *command) Execute(feeds map[string]string) []models.Feed {
 }
 
 // GetFeed Fetches a feed.
-func (c *command) GetFeed(url string) (bool, string) {
+func (c *command) GetFeed(url string) (bool, string, http.Header) {
 	client := http.Client{Timeout: time.Second * constants.Two}
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
@@ -89,7 +101,7 @@ func (c *command) GetFeed(url string) (bool, string) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return false, ""
+		return false, "", nil
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -99,7 +111,7 @@ func (c *command) GetFeed(url string) (bool, string) {
 
 	_ = resp.Body.Close()
 
-	return resp.StatusCode == http.StatusOK, string(body)
+	return resp.StatusCode == http.StatusOK, string(body), resp.Header
 }
 
 // New creates new Command.

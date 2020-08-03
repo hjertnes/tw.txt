@@ -27,7 +27,10 @@ type command struct {
 
 func (c *command) Execute(subCommand string) {
 	timeline := make([]models.Tweet, 0)
+
 	feeds := c.loadFeeds.Execute()
+
+	fmt.Println(feeds)
 
 	for _, feed := range feeds {
 		lines := strings.Split(feed.Body, "\n")

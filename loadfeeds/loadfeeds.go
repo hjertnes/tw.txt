@@ -2,6 +2,7 @@ package loadfeeds
 
 import (
 	"errors"
+	"fmt"
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/cache"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/getfeeds"
@@ -54,15 +55,28 @@ func (s *service) Execute() []models.Feed {
 		}
 	}
 
-	for _, headData := range s.headFeeds.Execute(feedsToHead){
+	fmt.Println(feedsToHead)
+	fmt.Println(feedsToGet)
+
+
+	for _, headData := range s.headFeeds.Execute(feedsToHead) {
 		d, _ := s.cache.Get(headData.URL)
 
-		if d.ContentLength != headData.ContentLength && headData.LastModified.After(d.LastUpdated){
+		if headData.ContentLength != 0 && d.ContentLength != headData.ContentLength && headData.LastModified.After(d.LastUpdated) {
 			feedsToHead[d.Handle] = d.URL
+		} else {
+			data = append(data, models.Feed{
+				Handle: d.Handle,
+				URL: d.URL,
+				Status: true,
+				Body: d.Content,
+				LastModified: d.LastUpdated,
+				ContentLength: d.ContentLength,
+			})
 		}
 	}
 
-	for _, getData := range s.getFeeds.Execute(feedsToGet){
+	for _, getData := range s.getFeeds.Execute(feedsToGet) {
 		s.cache.Set(getData.Handle, getData.URL, getData.Body, getData.ContentLength, getData.LastModified)
 		data = append(data, getData)
 	}
