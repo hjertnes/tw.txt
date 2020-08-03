@@ -57,8 +57,8 @@ func (s *service) Execute() []models.Feed {
 	for _, headData := range s.headFeeds.Execute(feedsToHead) {
 		d, _ := s.cache.Get(headData.URL)
 
-		if headData.ContentLength != 0 && d.ContentLength != headData.ContentLength && headData.LastModified.After(d.LastUpdated) {
-			feedsToHead[d.Handle] = d.URL
+		if d.ContentLength != headData.ContentLength && headData.LastModified.After(d.LastUpdated) {
+			feedsToGet[d.Handle] = d.URL
 		} else {
 			data = append(data, models.Feed{
 				Handle: d.Handle,
@@ -76,12 +76,14 @@ func (s *service) Execute() []models.Feed {
 		data = append(data, getData)
 	}
 
+
 	err := s.cache.Save()
 	if err != nil{
 		utils.ErrorHandler(err)
 	}
 
 	return data
+
 }
 
 

@@ -30,8 +30,6 @@ func (c *command) Execute(subCommand string) {
 
 	feeds := c.loadFeeds.Execute()
 
-	fmt.Println(feeds)
-
 	for _, feed := range feeds {
 		lines := strings.Split(feed.Body, "\n")
 		timeline = append(timeline, utils.ParseFile(feed.Handle, feed.URL, lines)...)
