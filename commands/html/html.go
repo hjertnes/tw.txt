@@ -3,6 +3,7 @@ package html
 
 import (
 	"fmt"
+	"git.sr.ht/~hjertnes/patterns"
 	"git.sr.ht/~hjertnes/tw.txt/services/fetchfeeds"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/parser"
@@ -15,6 +16,8 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
+
+
 )
 
 // Command is the publicly exposed interface.
@@ -65,11 +68,10 @@ func (c *command) Execute() {
 
 func rewriteOrgModeLinks(input string) string{
 	for {
-		if !strings.Contains(input, "[["){
+		parts, err := patterns.FindAndSplit(input, "[[", "]]", "][")
+		if err != nil {
 			break
 		}
-
-		parts := strings.Split(strings.Split(strings.Split(input, "[[")[1], "]]")[0], "][")
 
 		if len(parts) == 1{
 			input = strings.ReplaceAll(input, fmt.Sprintf("[[%s]]", parts[0]), fmt.Sprintf(`<a href="%s">%s</a>`, parts[0], parts[0]))
@@ -83,18 +85,19 @@ func rewriteOrgModeLinks(input string) string{
 
 func rewriteMentions(input string) string{
 	for {
-		if !strings.Contains(input, "@<"){
+		match, err := patterns.FindAndSplit(input, "@<", ">", " ")
+		if err != nil{
 			break
 		}
 
-		parts := strings.Split(strings.Split(strings.Split(input, "@<")[1], ">")[0], " ")
-
-		if len(parts) != 2{
+		if len(match) < 2{
 			break
 		}
 
-		input = strings.ReplaceAll(input, fmt.Sprintf("@<%s %s>", parts[0], parts[1]), fmt.Sprintf(`<a href="%s">@%s</a>`, parts[1], parts[0]))
-
+		input = strings.ReplaceAll(
+			input,
+			fmt.Sprintf("@<%s %s>", match[0], match[1]),
+			fmt.Sprintf(`<a href="%s">@%s</a>`, match[1], match[0]))
 	}
 
 	return input
