@@ -2,7 +2,6 @@ package loadfeeds
 
 import (
 	"errors"
-	"fmt"
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/cache"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/getfeeds"
@@ -33,7 +32,6 @@ func (s *service) Execute() []models.Feed {
 	data := make([]models.Feed, 0)
 
 	for handle, url := range feeds{
-		fmt.Println(s.cache)
 		d, err := s.cache.Get(url)
 
 		if err != nil{
