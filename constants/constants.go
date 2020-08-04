@@ -11,11 +11,21 @@ var ErrTooFewArgs = errors.New("too few command line arguments")
 // ErrConfigDoesNotExist Error for missing config file.
 var ErrConfigDoesNotExist = errors.New("config does not exist")
 
+var ErrNotInCache = errors.New("not in cache")
+var ErrExpired = errors.New("in cache but expired")
+var ErrFetchHead = errors.New("in cache but should fetch head and re-validate")
+
 // Name Of The thing.
 const Name = "tw.txt"
 
 // Version of the app.
 const Version = "0.5.4"
 
+
 // Two Constant for the number two.
 const Two = 2
+
+
+const FirstArgument = 0
+const SecondArgument = 1
+

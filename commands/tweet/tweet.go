@@ -3,12 +3,12 @@ package tweet
 
 import (
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 	"io/ioutil"
 	"regexp"
 	"strings"
 	"time"
 
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
@@ -18,7 +18,7 @@ type Command interface {
 }
 
 type command struct {
-	config *config.Config
+	config *models.Config
 }
 
 func removeEmptyLines(items []string) []string {
@@ -32,12 +32,6 @@ func removeEmptyLines(items []string) []string {
 
 	return result
 }
-
-// func (c *command) replaceReFunc(s string) string {
-// ss := strings.Replace(s, "@", "", 1)
-
-//return strings.Replace(s, ss, fmt.Sprintf("@<%s, %s>", ss, c.config.CommonConfig.Following[ss]), 1)
-//}
 
 func (c *command) replaceAtMentions(items []string) []string {
 	result := make([]string, 0)
@@ -85,6 +79,6 @@ func (c *command) Execute(message string) {
 }
 
 // New creates new Command.
-func New(conf *config.Config) Command {
+func New(conf *models.Config) Command {
 	return &command{config: conf}
 }

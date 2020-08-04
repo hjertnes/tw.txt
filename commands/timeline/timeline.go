@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/output"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
@@ -21,7 +20,7 @@ type Command interface {
 }
 
 type command struct {
-	config     *config.Config
+	config     *models.Config
 	loadFeeds loadfeeds.Service
 }
 
@@ -90,6 +89,6 @@ func (c *command) FormatMention(nick, url, followednick string) string {
 }
 
 // New creates new Command.
-func New(conf *config.Config, lf loadfeeds.Service) Command {
+func New(conf *models.Config, lf loadfeeds.Service) Command {
 	return &command{config: conf, loadFeeds: lf}
 }

@@ -2,12 +2,11 @@
 package edit
 
 import (
+	"git.sr.ht/~hjertnes/tw.txt/models"
 	"os"
 	"os/exec"
 
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-
-	"git.sr.ht/~hjertnes/tw.txt/config"
 )
 
 // Command for editing twtxt in EDITOR.
@@ -16,7 +15,7 @@ type Command interface {
 }
 
 type command struct {
-	config *config.Config
+	config *models.Config
 }
 
 func (c *command) Execute(subCommand string) {
@@ -38,6 +37,6 @@ func (c *command) Execute(subCommand string) {
 }
 
 // New creates new Command.
-func New(conf *config.Config) Command {
+func New(conf *models.Config) Command {
 	return &command{config: conf}
 }

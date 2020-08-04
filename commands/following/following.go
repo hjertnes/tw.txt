@@ -3,8 +3,7 @@ package following
 
 import (
 	"fmt"
-
-	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 )
 
 // Command is the exposed interface.
@@ -13,7 +12,7 @@ type Command interface {
 }
 
 type command struct {
-	config *config.Config
+	config *models.Config
 }
 
 func (c *command) Execute() {
@@ -23,6 +22,6 @@ func (c *command) Execute() {
 }
 
 // New is constructor.
-func New(conf *config.Config) Command {
+func New(conf *models.Config) Command {
 	return &command{config: conf}
 }

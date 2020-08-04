@@ -5,6 +5,7 @@ import "C"
 import (
 	"fmt"
 	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"gopkg.in/yaml.v2"
 	"os"
@@ -31,7 +32,7 @@ func (c *command) Execute(){
 		f, err := os.Create(filename)
 		utils.ErrorHandler(err)
 
-		content, err := yaml.Marshal(&config.InternalConfig{
+		content, err := yaml.Marshal(&models.InternalConfig{
 
 		})
 		utils.ErrorHandler(err)

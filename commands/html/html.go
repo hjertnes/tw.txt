@@ -13,11 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-
-
 )
 
 // Command is the publicly exposed interface.
@@ -26,7 +23,7 @@ type Command interface {
 }
 
 type command struct {
-	config     *config.Config
+	config     *models.Config
 	loadFeeds loadfeeds.Service
 }
 
@@ -157,6 +154,6 @@ func mapToString(input map[string]string) string{
 }
 
 // New creates new Command.
-func New(conf *config.Config, lf loadfeeds.Service) Command{
+func New(conf *models.Config, lf loadfeeds.Service) Command{
 	return &command{config: conf, loadFeeds: lf}
 }

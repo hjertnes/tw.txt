@@ -3,6 +3,7 @@ package unfollow
 
 import (
 	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 )
 
 // Command is the exposed interface.
@@ -11,7 +12,7 @@ type Command interface {
 }
 
 type command struct {
-	config *config.Config
+	config *models.Config
 }
 
 func (c *command) Execute(nick string) {
@@ -20,6 +21,6 @@ func (c *command) Execute(nick string) {
 }
 
 // New is the constructor.
-func New(conf *config.Config) Command {
+func New(conf *models.Config) Command {
 	return &command{config: conf}
 }

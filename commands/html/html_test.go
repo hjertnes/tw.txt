@@ -1,19 +1,15 @@
-package tweet
+package html
 
 import (
 	"fmt"
 	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"os"
 	"testing"
 )
 
 func TestTest(t *testing.T) {
-	_ = os.Setenv("TEST", "true")
-
-	config.CreateConfigFiles()
-
 	conf := &models.Config{
 		CommonConfig: &models.CommonConfig{
 			Nick:             "hjertnes",
@@ -25,11 +21,16 @@ func TestTest(t *testing.T) {
 			},
 			File: utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", config.GetConfigDir())),
 		},
+		InternalConfig: &models.InternalConfig{
+			TemplateFileLocation: "~/Code/tw.txt/template.html",
+		},
 	}
 
-	New(conf).Execute("@hjertnes test")
+	lf := &mocks.LoadFeedsMock{}
 
-	config.DeleteConfigFiles()
+	lf.On("Execute").Return([]models.Feed{
+		models.Feed{},
+	})
 
-	_ = os.Setenv("TEST", "")
+	New(conf, lf).Execute()
 }

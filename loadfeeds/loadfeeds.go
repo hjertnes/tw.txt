@@ -2,7 +2,7 @@ package loadfeeds
 
 import (
 	"errors"
-	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/cache"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/getfeeds"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/headfeeds"
@@ -15,7 +15,7 @@ type Service interface {
 }
 
 type service struct {
-	config *config.Config
+	config *models.Config
 	cache cache.Service
 	headFeeds headfeeds.Command
 	getFeeds getfeeds.Command
@@ -35,14 +35,15 @@ func (s *service) Execute() []models.Feed {
 		d, err := s.cache.Get(url)
 
 		if err != nil{
-			if errors.Is(err, cache.ErrorExpired) || errors.Is(err, cache.ErrorNotInCache){
+			if errors.Is(err, constants.ErrExpired) || errors.Is(err, constants.ErrNotInCache){
 				feedsToGet[handle] = url
 			}
 
-			if errors.Is(err, cache.ErrorFetchHead){
+			if errors.Is(err, constants.ErrFetchHead){
 				feedsToHead[handle] = url
 			}
 		} else {
+			s.cache.Set(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated)
 			data = append(data, models.Feed{
 				Handle: handle,
 				URL: url,
@@ -60,6 +61,7 @@ func (s *service) Execute() []models.Feed {
 		if d.ContentLength != headData.ContentLength && headData.LastModified.After(d.LastUpdated) {
 			feedsToGet[d.Handle] = d.URL
 		} else {
+			s.cache.Set(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated)
 			data = append(data, models.Feed{
 				Handle: d.Handle,
 				URL: d.URL,
@@ -76,18 +78,15 @@ func (s *service) Execute() []models.Feed {
 		data = append(data, getData)
 	}
 
-
 	err := s.cache.Save()
 	if err != nil{
 		utils.ErrorHandler(err)
 	}
 
 	return data
-
 }
 
-
-func New(config *config.Config, cache cache.Service, headFeeds headfeeds.Command, getFeeds getfeeds.Command) Service{
+func New(config *models.Config, cache cache.Service, headFeeds headfeeds.Command, getFeeds getfeeds.Command) Service{
 	return &service{
 		config, cache, headFeeds, getFeeds,
 	}

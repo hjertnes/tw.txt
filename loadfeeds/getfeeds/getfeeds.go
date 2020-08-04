@@ -12,7 +12,6 @@ import (
 
 	"git.sr.ht/~hjertnes/tw.txt/models"
 
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"github.com/schollz/progressbar/v3"
 )
@@ -23,7 +22,7 @@ type Command interface {
 }
 
 type command struct {
-	config *config.Config
+	config *models.Config
 }
 
 const maxfetchers = 50
@@ -115,6 +114,6 @@ func (c *command) GetFeed(url string) (bool, string, http.Header) {
 }
 
 // New creates new Command.
-func New(conf *config.Config) Command {
+func New(conf *models.Config) Command {
 	return &command{config: conf}
 }

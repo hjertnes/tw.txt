@@ -3,6 +3,7 @@ package config
 
 import (
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 	"io/ioutil"
 	"os"
 
@@ -10,27 +11,6 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"gopkg.in/yaml.v2"
 )
-
-// CommonConfig is a shared config intended to be supported by all twtxt clients.
-type CommonConfig struct {
-	Nick             string
-	URL              string
-	File             string
-	Following        map[string]string
-	DiscloseIdentity bool
-}
-
-// InternalConfig config file used by this client: located at ~/.tw.txt/config.yaml.
-type InternalConfig struct {
-	ConfigFileLocation string
-	TemplateFileLocation string
-}
-
-// Config Type config contains CommonConfig and InternalConfig.
-type Config struct {
-	InternalConfig *InternalConfig
-	CommonConfig   *CommonConfig
-}
 
 // GetConfigDir Get Config Dir.
 func GetConfigDir() string {
@@ -50,7 +30,7 @@ func GetConfigFilename() string {
 	return "~/.tw.txt/config.yaml"
 }
 
-func writeInternalConfig(conf *InternalConfig) error {
+func writeInternalConfig(conf *models.InternalConfig) error {
 	configFilename := utils.ReplaceTilde(GetConfigFilename())
 	if !utils.Exist(configFilename) {
 		return constants.ErrConfigDoesNotExist
@@ -69,7 +49,7 @@ func writeInternalConfig(conf *InternalConfig) error {
 	return nil
 }
 
-func writeCommonConfig(conf *Config) error {
+func writeCommonConfig(conf *models.Config) error {
 	configFilename := utils.ReplaceTilde(conf.InternalConfig.ConfigFileLocation)
 	if !utils.Exist(configFilename) {
 		return constants.ErrConfigDoesNotExist
@@ -88,7 +68,7 @@ func writeCommonConfig(conf *Config) error {
 	return nil
 }
 
-func readInternalConfig() (*InternalConfig, error) {
+func readInternalConfig() (*models.InternalConfig, error) {
 	configFilename := utils.ReplaceTilde(GetConfigFilename())
 	if !utils.Exist(configFilename) {
 		return nil, constants.ErrConfigDoesNotExist
@@ -104,7 +84,7 @@ func readInternalConfig() (*InternalConfig, error) {
 		return nil, err
 	}
 
-	config := &InternalConfig{}
+	config := &models.InternalConfig{}
 
 	err = yaml.Unmarshal(content, config)
 	if err != nil {
@@ -114,7 +94,7 @@ func readInternalConfig() (*InternalConfig, error) {
 	return config, nil
 }
 
-func readCommonConfig(filename string) (*CommonConfig, error) {
+func readCommonConfig(filename string) (*models.CommonConfig, error) {
 	configFilename := utils.ReplaceTilde(filename)
 	if !utils.Exist(configFilename) {
 		return nil, constants.ErrConfigDoesNotExist
@@ -130,7 +110,7 @@ func readCommonConfig(filename string) (*CommonConfig, error) {
 		return nil, err
 	}
 
-	config := &CommonConfig{}
+	config := &models.CommonConfig{}
 
 	err = yaml.Unmarshal(content, config)
 	if err != nil {
@@ -141,7 +121,7 @@ func readCommonConfig(filename string) (*CommonConfig, error) {
 }
 
 // New builds configs.
-func New() (*Config, error) {
+func New() (*models.Config, error) {
 	internal, err := readInternalConfig()
 	if err != nil {
 		return nil, err
@@ -152,14 +132,14 @@ func New() (*Config, error) {
 		return nil, err
 	}
 
-	return &Config{
+	return &models.Config{
 		InternalConfig: internal,
 		CommonConfig:   common,
 	}, nil
 }
 
 // Save Write back config files.
-func Save(conf *Config) {
+func Save(conf *models.Config) {
 	err := writeInternalConfig(conf.InternalConfig)
 	utils.ErrorHandler(err)
 
@@ -180,7 +160,7 @@ func CreateConfigFiles() {
 	f, err := os.Create(filename)
 	utils.ErrorHandler(err)
 
-	content, err := yaml.Marshal(&InternalConfig{
+	content, err := yaml.Marshal(&models.InternalConfig{
 		ConfigFileLocation: filename2,
 	})
 	utils.ErrorHandler(err)
@@ -194,7 +174,7 @@ func CreateConfigFiles() {
 	f, err = os.Create(filename2)
 	utils.ErrorHandler(err)
 
-	content2, err := yaml.Marshal(&CommonConfig{
+	content2, err := yaml.Marshal(&models.CommonConfig{
 		File:      utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", GetConfigDir())),
 		Following: map[string]string{"hjertnes": "https://hjertnes.social/twtxt.txt"},
 	})

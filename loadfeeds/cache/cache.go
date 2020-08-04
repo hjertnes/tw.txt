@@ -1,7 +1,8 @@
 package cache
 
 import (
-	"errors"
+	"git.sr.ht/~hjertnes/tw.txt/constants"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -9,54 +10,36 @@ import (
 	"time"
 )
 
-type CachedUser struct {
-	Handle string
-	URL string
-	Content string
-	NextCheck time.Time
-	Expire time.Time // 24h
-	LastUpdated time.Time
-	ContentLength int
-}
-
-var ErrorNotInCache = errors.New("not in cache")
-var ErrorExpired = errors.New("in cache but expired")
-var ErrorFetchHead = errors.New("in cache but should fetch head and re-validate")
-
-type CacheFile struct {
-	Users map[string]*CachedUser
-}
-
 type Service interface {
-	Get(url string) (*CachedUser, error)
+	Get(url string) (*models.CachedUser, error)
 	Set(handle string, url string, content string, contentLength int, lastUpdated time.Time)
 	Save() error
 
 }
 
 type service struct {
-	data *CacheFile
+	data *models.CacheFile
 }
 
-func(s *service) Get(url string) (*CachedUser, error){
+func(s *service) Get(url string) (*models.CachedUser, error){
 	user := s.data.Users[url]
 	if user == nil {
-		return nil, ErrorNotInCache
+		return nil, constants.ErrNotInCache
 	}
 
 	if user.Expire.Before(time.Now()){
-		return nil, ErrorExpired
+		return nil, constants.ErrExpired
 	}
 
 	if user.NextCheck.Before(time.Now()){
-		return user, ErrorFetchHead
+		return user, constants.ErrFetchHead
 	}
 
 	return user, nil
 }
 
 func (s *service) Set(handle string, url string, content string, contentLength int, lastUpdated time.Time){
-	s.data.Users[url] = &CachedUser{
+	s.data.Users[url] = &models.CachedUser{
 		Handle: handle,
 		URL: url,
 		Content: content,
@@ -69,6 +52,9 @@ func (s *service) Set(handle string, url string, content string, contentLength i
 
 func (s *service) Save() error{
 	filename := "~/.tw.txt/cache.yaml"
+	if os.Getenv("TEST") != ""{
+		filename = "~/.tw.txt-test/cache.yaml"
+	}
 	cc, err := yaml.Marshal(s.data)
 	if err != nil{
 		return err
@@ -80,14 +66,17 @@ func (s *service) Save() error{
 
 func New() (Service, error){
 	filename := "~/.tw.txt/cache.yaml"
+	if os.Getenv("TEST") != ""{
+		filename = "~/.tw.txt-test/cache.yaml"
+	}
 	if !utils.Exist(utils.ReplaceTilde(filename)){
 		f, err :=  os.Create(utils.ReplaceTilde(filename))
 		if err != nil{
 			return nil, err
 		}
 
-		c := &CacheFile{
-			Users: make(map[string]*CachedUser),
+		c := &models.CacheFile{
+			Users: make(map[string]*models.CachedUser),
 		}
 
 		cc, err := yaml.Marshal(c)
@@ -111,7 +100,7 @@ func New() (Service, error){
 		return nil, err
 	}
 
-	c := &CacheFile{}
+	c := &models.CacheFile{}
 
 	err = yaml.Unmarshal(content, c)
 	if err != nil {

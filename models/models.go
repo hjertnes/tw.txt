@@ -42,3 +42,38 @@ type HTMLModel struct {
 	Timestamp time.Time
 	Timeline []HTMLTweet
 }
+
+// CommonConfig is a shared config intended to be supported by all twtxt clients.
+type CommonConfig struct {
+	Nick             string
+	URL              string
+	File             string
+	Following        map[string]string
+	DiscloseIdentity bool
+}
+
+// InternalConfig config file used by this client: located at ~/.tw.txt/config.yaml.
+type InternalConfig struct {
+	ConfigFileLocation string
+	TemplateFileLocation string
+}
+
+// Config Type config contains CommonConfig and InternalConfig.
+type Config struct {
+	InternalConfig *InternalConfig
+	CommonConfig   *CommonConfig
+}
+
+type CachedUser struct {
+	Handle string
+	URL string
+	Content string
+	NextCheck time.Time
+	Expire time.Time // 24h
+	LastUpdated time.Time
+	ContentLength int
+}
+
+type CacheFile struct {
+	Users map[string]*CachedUser
+}
