@@ -21,6 +21,7 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
+const one = 1
 const two = 2
 
 func configErrorHandler(command string, err error) {
@@ -45,7 +46,12 @@ func runProgram(args []string) {
 
 	lf := buildLoadFeeds(conf)
 
-	if len(params) < two && (command == "follow" || command == "unfollow" || command == "tweet") {
+	if len(params) < one && (command == "follow" || command == "unfollow" || command == "tweet") {
+		help.New().Execute()
+		return
+	}
+
+	if len(params) < two && (command == "follow"){
 		help.New().Execute()
 		return
 	}

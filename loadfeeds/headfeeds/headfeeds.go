@@ -44,8 +44,6 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 		go func(url string) {
 			resp := c.GetFeed(url)
 
-			_ = resp.Body.Close()
-
 			tweetsch <- resp
 
 			<-fetchers
