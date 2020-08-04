@@ -13,6 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Service is the exposed interface.
 type Service interface {
 	Get() *models.Config
 	Save() error
@@ -22,7 +23,7 @@ type service struct {
 	config *models.Config
 }
 
-func (s *service) Get() *models.Config{
+func (s *service) Get() *models.Config {
 	return s.config
 }
 
@@ -157,7 +158,7 @@ func New() (Service, error) {
 // Save Write back config files.
 func (s *service) Save() error {
 	err := writeInternalConfig(s.config.InternalConfig)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 

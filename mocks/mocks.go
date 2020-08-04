@@ -2,80 +2,87 @@
 package mocks
 
 import (
+	"time"
+
 	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"github.com/stretchr/testify/mock"
-	"time"
 )
 
-// LoadFeedsMock is a Mock for the Service loadfeeds.Service
+// LoadFeedsMock is a Mock for the Service loadfeeds.Service.
 type LoadFeedsMock struct {
 	mock.Mock
 }
-// Execute mock
+
+// Execute mock.
 func (l *LoadFeedsMock) Execute() []models.Feed {
 	args := l.Called()
 
 	return args.Get(constants.FirstArgument).([]models.Feed)
 }
 
+// ConfigMock is a mock for config Service.
 type ConfigMock struct {
 	mock.Mock
 }
 
-func (c *ConfigMock) Get() *models.Config{
+// Get is a mock.
+func (c *ConfigMock) Get() *models.Config {
 	args := c.Called()
 
 	return args.Get(constants.FirstArgument).(*models.Config)
 }
 
-func (c *ConfigMock) Save() error{
+// Save is a mock.
+func (c *ConfigMock) Save() error {
 	args := c.Called()
 
 	return args.Error(constants.FirstArgument)
 }
 
+// GetFeedsMock is mock for headfeed package.
 type GetFeedsMock struct {
 	mock.Mock
 }
 
-func (g *GetFeedsMock) Execute(feeds map[string]string) []models.Feed{
+// Execute is a mock.
+func (g *GetFeedsMock) Execute(feeds map[string]string) []models.Feed {
 	args := g.Called(feeds)
 
 	return args.Get(constants.FirstArgument).([]models.Feed)
 }
 
+// HeadFeedsMock is mock for headfeed package.
 type HeadFeedsMock struct {
 	mock.Mock
 }
 
-func (h *HeadFeedsMock) Execute(feeds map[string]string) []models.FeedHead{
+// Execute is a mock.
+func (h *HeadFeedsMock) Execute(feeds map[string]string) []models.FeedHead {
 	args := h.Called(feeds)
 
 	return args.Get(constants.FirstArgument).([]models.FeedHead)
 }
 
+// CacheMock is a mock for Cache.Service.
 type CacheMock struct {
 	mock.Mock
 }
 
-type Service interface {
-	Get(url string) (*models.CachedUser, error)
-	Set(handle string, url string, content string, contentLength int, lastUpdated time.Time)
-	Save() error
-}
-
-func (c *CacheMock) Get(url string) (*models.CachedUser, error){
+// Get is a mock.
+func (c *CacheMock) Get(url string) (*models.CachedUser, error) {
 	args := c.Called(url)
 
 	return args.Get(constants.FirstArgument).(*models.CachedUser), args.Error(constants.SecondArgument)
 }
 
-func (c *CacheMock) Set(handle string, url string, content string, contentLength int, lastUpdated time.Time){
+// Set is a mock.
+func (c *CacheMock) Set(handle string, url string, content string, contentLength int, lastUpdated time.Time) {
 	_ = c.Called(handle, url, content, contentLength, lastUpdated)
 }
 
-func (c *CacheMock) Save() error{
+// Save is a mock.
+func (c *CacheMock) Save() error {
 	args := c.Called()
 
 	return args.Error(constants.FirstArgument)

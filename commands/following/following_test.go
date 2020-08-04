@@ -1,10 +1,10 @@
 package following
 
 import (
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
-
-	"testing"
 )
 
 func TestTest(t *testing.T) {

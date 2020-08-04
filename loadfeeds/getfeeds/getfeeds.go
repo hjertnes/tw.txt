@@ -4,16 +4,15 @@ package getfeeds
 import (
 	"context"
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
 
-	"git.sr.ht/~hjertnes/tw.txt/models"
-
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/constants"
+	"git.sr.ht/~hjertnes/tw.txt/models"
 	"github.com/schollz/progressbar/v3"
 )
 

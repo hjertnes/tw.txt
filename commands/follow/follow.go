@@ -16,7 +16,8 @@ type command struct {
 
 func (c *command) Execute(nick string, url string) {
 	c.config.Get().CommonConfig.Following[nick] = url
-	c.config.Save()
+
+	_ = c.config.Save()
 }
 
 // New is constructor.

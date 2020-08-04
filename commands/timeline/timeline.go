@@ -3,14 +3,13 @@ package timeline
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
 
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
-
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/output"
 	"git.sr.ht/~hjertnes/tw.txt/utils"

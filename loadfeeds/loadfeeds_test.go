@@ -2,16 +2,17 @@ package loadfeeds
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"github.com/stretchr/testify/mock"
-	"os"
-	"testing"
 )
 
-func TestTest(t *testing.T){
+func TestTest(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
 
 	config.CreateConfigFiles()
@@ -22,7 +23,7 @@ func TestTest(t *testing.T){
 			URL:              "https://hjertnes.social/twtxt.txt",
 			DiscloseIdentity: true,
 			Following: map[string]string{
-				"hjertnes":    "https://hjertnes.social/twtxt.txt",
+				"hjertnes": "https://hjertnes.social/twtxt.txt",
 			},
 			File: utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", config.GetConfigDir())),
 		},
@@ -41,10 +42,9 @@ func TestTest(t *testing.T){
 	g.On("Execute", mock.Anything).Return([]models.Feed{})
 	cache.On("Save").Return(nil)
 
-		New(c, cache, h, g).Execute()
+	New(c, cache, h, g).Execute()
 
 	config.DeleteConfigFiles()
 
 	_ = os.Setenv("TEST", "")
 }
-

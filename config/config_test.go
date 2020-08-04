@@ -1,11 +1,12 @@
 package config
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
 
+	"git.sr.ht/~hjertnes/tw.txt/utils"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetConfigDir(t *testing.T) {
@@ -30,7 +31,9 @@ func TestGetConfigFile(t *testing.T) {
 
 func TestNew(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
+
 	CreateConfigFiles()
+
 	c, err := New()
 
 	assert.Nil(t, err)

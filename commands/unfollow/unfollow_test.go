@@ -2,13 +2,14 @@ package unfollow
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"github.com/stretchr/testify/assert"
-	"os"
-	"testing"
 )
 
 func TestTest(t *testing.T) {

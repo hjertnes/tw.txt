@@ -17,8 +17,9 @@ type command struct {
 
 func (c *command) Execute(nick string) {
 	delete(c.config.Get().CommonConfig.Following, nick)
+
 	err := c.config.Save()
-	if err != nil{
+	if err != nil {
 		utils.ErrorHandler(err)
 	}
 }

@@ -2,9 +2,10 @@ package testfeeds
 
 import (
 	"fmt"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"testing"
 
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"

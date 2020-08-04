@@ -16,11 +16,11 @@ var (
 	// ErrNotInCache error for when a key is not in cache
 	ErrNotInCache = errors.New("not in cache")
 
-	//ErrExpired error for when a key has expired
-	ErrExpired    = errors.New("in cache but expired")
+	// ErrExpired error for when a key has expired
+	ErrExpired = errors.New("in cache but expired")
 
 	// ErrFetchHead error for when it is in cache, has not expired, but should be re-evaluated
-	ErrFetchHead  = errors.New("in cache but should fetch head and re-validate")
+	ErrFetchHead = errors.New("in cache but should fetch head and re-validate")
 )
 
 // Name Of The thing.
@@ -34,12 +34,12 @@ const Two = 2
 
 const twentyFour = 24
 
-// Duration for a day.
+// OneDay Duration for a day.
 const OneDay = time.Hour * twentyFour
 
 const (
 	// FirstArgument is the first arg when you need to reference then as a zero indexed int.
-	FirstArgument  = 0
+	FirstArgument = 0
 
 	// SecondArgument is the first arg when you need to reference then as a zero indexed int.
 	SecondArgument = 1

@@ -3,11 +3,12 @@ package tweet
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"io/ioutil"
 	"regexp"
 	"strings"
 	"time"
+
+	"git.sr.ht/~hjertnes/tw.txt/config"
 
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )

@@ -2,9 +2,10 @@
 package edit
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"os"
 	"os/exec"
+
+	"git.sr.ht/~hjertnes/tw.txt/config"
 
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )

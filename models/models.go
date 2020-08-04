@@ -14,6 +14,7 @@ type Tweet struct {
 	Message   string
 }
 
+// HTMLTweet is like Tweet but for generating timeline as HTML.
 type HTMLTweet struct {
 	Timestamp time.Time
 	Handle    string
@@ -32,12 +33,14 @@ type Feed struct {
 	Body          string
 }
 
+// FeedHead is the type returned after a HEAD request to a feed.
 type FeedHead struct {
 	ContentLength int
 	LastModified  time.Time
 	URL           string
 }
 
+// HTMLModel is a the model used when generating a timelien to html.
 type HTMLModel struct {
 	Timestamp time.Time
 	Timeline  []HTMLTweet
@@ -64,16 +67,18 @@ type Config struct {
 	CommonConfig   *CommonConfig
 }
 
+// CachedUser is the model for a cached feed.
 type CachedUser struct {
 	Handle        string
 	URL           string
 	Content       string
 	NextCheck     time.Time
-	Expire        time.Time // 24h
+	Expire        time.Time
 	LastUpdated   time.Time
 	ContentLength int
 }
 
+// CacheFile is the cache file model.
 type CacheFile struct {
 	Users map[string]*CachedUser
 }

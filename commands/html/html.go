@@ -3,13 +3,14 @@ package html
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"html/template"
 	"os"
 	"sort"
 	"strings"
 	"time"
+
+	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/constants"
 
 	"git.sr.ht/~hjertnes/patterns"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
@@ -118,7 +119,10 @@ func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet {
 			classes["by-myself"] = "by-myself"
 		}
 
-		if strings.Contains(tweet.Message, fmt.Sprintf("@<%s %s>", c.config.Get().CommonConfig.Nick, c.config.Get().CommonConfig.URL)) {
+		if strings.Contains(
+			tweet.Message,
+			fmt.Sprintf("@<%s %s>", c.config.Get().CommonConfig.Nick, c.config.Get().CommonConfig.URL),
+		) {
 			classes["mentioned"] = "mentioned"
 		}
 
@@ -134,9 +138,9 @@ func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet {
 			Handle:    tweet.Handle,
 			URL:       tweet.URL,
 			/* #nosec */
-			Message:   template.HTML(html),
+			Message: template.HTML(html),
 			/* #sec */
-			Classes:   mapToString(classes),
+			Classes: mapToString(classes),
 		})
 	}
 

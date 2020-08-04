@@ -4,11 +4,12 @@ package headfeeds
 import (
 	"context"
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"git.sr.ht/~hjertnes/tw.txt/config"
 
 	"git.sr.ht/~hjertnes/tw.txt/models"
 

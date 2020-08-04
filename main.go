@@ -23,8 +23,8 @@ import (
 
 const two = 2
 
-func configErrorHandler(command string, err error){
-	if  command == "timeline" ||
+func configErrorHandler(command string, err error) {
+	if command == "timeline" ||
 		command == "html" ||
 		command == "follow" ||
 		command == "unfollow" ||
@@ -45,7 +45,7 @@ func runProgram(args []string) {
 
 	lf := buildLoadFeeds(conf)
 
-	if len(params) < two && (command == "follow" || command == "unfollow" || command == "tweet"){
+	if len(params) < two && (command == "follow" || command == "unfollow" || command == "tweet") {
 		help.New().Execute()
 		return
 	}
@@ -76,9 +76,9 @@ func runProgram(args []string) {
 	}
 }
 
-func buildLoadFeeds(conf config.Service) loadfeeds.Service{
+func buildLoadFeeds(conf config.Service) loadfeeds.Service {
 	c, _ := cache.New()
-	//utils.ErrorHandler(err)
+	// utils.ErrorHandler(err)
 
 	hf := headfeeds.New(conf)
 	gf := getfeeds.New(conf)

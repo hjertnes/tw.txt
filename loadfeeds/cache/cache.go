@@ -68,7 +68,7 @@ func (s *service) Save() error {
 	return err
 }
 
-// New is the constructor
+// New is the constructor.
 func New() (Service, error) {
 	filename := "~/.tw.txt/cache.yaml"
 	if os.Getenv("TEST") != "" {
@@ -77,7 +77,6 @@ func New() (Service, error) {
 
 	if !utils.Exist(utils.ReplaceTilde(filename)) {
 		f, err := os.Create(utils.ReplaceTilde(filename))
-
 		if err != nil {
 			return nil, err
 		}

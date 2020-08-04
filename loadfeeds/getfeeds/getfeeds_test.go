@@ -2,15 +2,16 @@ package getfeeds
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"os"
-	"testing"
 )
 
-func TestTest(t *testing.T){
+func TestTest(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
 
 	config.CreateConfigFiles()

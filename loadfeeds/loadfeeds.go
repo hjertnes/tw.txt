@@ -3,6 +3,7 @@ package loadfeeds
 
 import (
 	"errors"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 
 	"git.sr.ht/~hjertnes/tw.txt/constants"
@@ -13,7 +14,7 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
-// Service is the exposed interface
+// Service is the exposed interface.
 type Service interface {
 	Execute() []models.Feed
 }
@@ -75,7 +76,8 @@ func (s *service) Execute() []models.Feed {
 	return data
 }
 
-func FromCachedUser(d *models.CachedUser) models.Feed{
+// FromCachedUser Builds Feed from CachedUser.
+func FromCachedUser(d *models.CachedUser) models.Feed {
 	return models.Feed{
 		Handle:        d.Handle,
 		URL:           d.URL,
@@ -86,7 +88,7 @@ func FromCachedUser(d *models.CachedUser) models.Feed{
 	}
 }
 
-// New is the constructor
+// New is the constructor.
 func New(config config.Service, cache cache.Service, headFeeds headfeeds.Command, getFeeds getfeeds.Command) Service {
 	return &service{
 		config, cache, headFeeds, getFeeds,

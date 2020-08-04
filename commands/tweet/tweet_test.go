@@ -2,17 +2,20 @@ package tweet
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"os"
-	"testing"
 )
 
 func TestTest(t *testing.T) {
 	_ = os.Setenv("TEST", "true")
+
 	config.CreateConfigFiles()
+
 	conf := &models.Config{
 		CommonConfig: &models.CommonConfig{
 			Nick:             "hjertnes",
@@ -32,10 +35,8 @@ func TestTest(t *testing.T) {
 	c.On("Save").Return(nil)
 
 	New(&c).Execute("@hjertnes test")
+
 	config.DeleteConfigFiles()
+
 	_ = os.Setenv("TEST", "")
-
-
-
-
 }

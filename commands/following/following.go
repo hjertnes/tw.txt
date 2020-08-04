@@ -3,6 +3,7 @@ package following
 
 import (
 	"fmt"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 )
 
