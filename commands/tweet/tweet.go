@@ -3,7 +3,7 @@ package tweet
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/models"
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"io/ioutil"
 	"regexp"
 	"strings"
@@ -18,7 +18,7 @@ type Command interface {
 }
 
 type command struct {
-	config *models.Config
+	config config.Service
 }
 
 func removeEmptyLines(items []string) []string {
@@ -36,7 +36,7 @@ func removeEmptyLines(items []string) []string {
 func (c *command) replaceAtMentions(items []string) []string {
 	result := make([]string, 0)
 
-	c.config.CommonConfig.Following[c.config.CommonConfig.Nick] = c.config.CommonConfig.URL
+	c.config.Get().CommonConfig.Following[c.config.Get().CommonConfig.Nick] = c.config.Get().CommonConfig.URL
 
 	for _, line := range items {
 		re1 := regexp.MustCompile(`\s@(\w*)\s`)
@@ -51,7 +51,7 @@ func (c *command) replaceAtMentions(items []string) []string {
 			line = strings.ReplaceAll(
 				line,
 				fmt.Sprintf("@%s", match[1]),
-				fmt.Sprintf("@<%s %s>", match[1], c.config.CommonConfig.Following[match[1]]))
+				fmt.Sprintf("@<%s %s>", match[1], c.config.Get().CommonConfig.Following[match[1]]))
 		}
 
 		result = append(result, line)
@@ -63,7 +63,7 @@ func (c *command) replaceAtMentions(items []string) []string {
 func (c *command) Execute(message string) {
 	date := time.Now().Format(time.RFC3339)
 
-	content, err := ioutil.ReadFile(utils.ReplaceTilde(c.config.CommonConfig.File))
+	content, err := ioutil.ReadFile(utils.ReplaceTilde(c.config.Get().CommonConfig.File))
 	utils.ErrorHandler(err)
 
 	lines := strings.Split(string(content), "\n")
@@ -74,11 +74,11 @@ func (c *command) Execute(message string) {
 
 	text := strings.Join(c.replaceAtMentions(removeEmptyLines(lines)), "\n")
 
-	err = ioutil.WriteFile(utils.ReplaceTilde(c.config.CommonConfig.File), []byte(text), 0)
+	err = ioutil.WriteFile(utils.ReplaceTilde(c.config.Get().CommonConfig.File), []byte(text), 0)
 	utils.ErrorHandler(err)
 }
 
 // New creates new Command.
-func New(conf *models.Config) Command {
+func New(conf config.Service) Command {
 	return &command{config: conf}
 }

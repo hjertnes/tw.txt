@@ -4,6 +4,7 @@ package headfeeds
 import (
 	"context"
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"net/http"
 	"strconv"
 	"sync"
@@ -21,7 +22,7 @@ type Command interface {
 }
 
 type command struct {
-	config *models.Config
+	config config.Service
 }
 
 const maxfetchers = 50
@@ -35,12 +36,14 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 	// max parallel http fetchers
 	fetchers := make(chan struct{}, maxfetchers)
 
-	for handle, url := range feeds {
+	for _, url := range feeds {
 		wg.Add(1)
 		fetchers <- struct{}{}
 
-		go func(handle string, url string) {
+		go func(url string) {
 			resp := c.GetFeed(url)
+
+			_ = resp.Body.Close()
 
 			tweetsch <- resp
 
@@ -49,7 +52,7 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 			_ = bar.Add(1)
 
 			wg.Done()
-		}(handle, url)
+		}(url)
 	}
 
 	go func() {
@@ -60,25 +63,24 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 	result := make([]models.FeedHead, 0)
 
 	for feed := range tweetsch {
-		if feed == nil{
+		if feed == nil {
 			continue
 		}
 
 		lm := time.Now()
 		cl := 0
 
-		if feed.Header["Last-Modified"] != nil{
+		if feed.Header["Last-Modified"] != nil {
 			lm, _ = time.Parse(time.RFC1123, feed.Header["Last-Modified"][0])
 		}
 
-		if feed.Header["Content-Length"] != nil{
+		if feed.Header["Content-Length"] != nil {
 			cl, _ = strconv.Atoi(feed.Header["Content-Length"][0])
 		}
 
-
 		result = append(result, models.FeedHead{
-			URL: feed.Request.URL.String(),
-			LastModified: lm,
+			URL:           feed.Request.URL.String(),
+			LastModified:  lm,
 			ContentLength: cl,
 		})
 	}
@@ -92,15 +94,15 @@ func (c *command) GetFeed(url string) *http.Response {
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
 
-	if c.config.CommonConfig.DiscloseIdentity {
+	if c.config.Get().CommonConfig.DiscloseIdentity {
 		req.Header.Set(
 			"User-Agent",
 			fmt.Sprintf(
 				"%s/%s (+%s; @%s)",
 				constants.Name,
 				constants.Version,
-				c.config.CommonConfig.URL,
-				c.config.CommonConfig.Nick,
+				c.config.Get().CommonConfig.URL,
+				c.config.Get().CommonConfig.Nick,
 			),
 		)
 	}
@@ -116,6 +118,6 @@ func (c *command) GetFeed(url string) *http.Response {
 }
 
 // New creates new Command.
-func New(conf *models.Config) Command {
+func New(conf config.Service) Command {
 	return &command{config: conf}
 }

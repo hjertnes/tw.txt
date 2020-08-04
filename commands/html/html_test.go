@@ -2,11 +2,12 @@ package html
 
 import (
 	"fmt"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"testing"
 )
 
 func TestTest(t *testing.T) {
@@ -26,11 +27,15 @@ func TestTest(t *testing.T) {
 		},
 	}
 
+	c := &mocks.ConfigMock{}
+
+	c.On("Get").Return(conf)
+
 	lf := &mocks.LoadFeedsMock{}
 
 	lf.On("Execute").Return([]models.Feed{
-		models.Feed{},
+		{},
 	})
 
-	New(conf, lf).Execute()
+	New(c, lf).Execute()
 }

@@ -1,4 +1,4 @@
-package tweet
+package getfeeds
 
 import (
 	"fmt"
@@ -10,9 +10,11 @@ import (
 	"testing"
 )
 
-func TestTest(t *testing.T) {
+func TestTest(t *testing.T){
 	_ = os.Setenv("TEST", "true")
+
 	config.CreateConfigFiles()
+
 	conf := &models.Config{
 		CommonConfig: &models.CommonConfig{
 			Nick:             "hjertnes",
@@ -26,16 +28,14 @@ func TestTest(t *testing.T) {
 		},
 	}
 
-	c := mocks.ConfigMock{}
+	c := &mocks.ConfigMock{}
 
 	c.On("Get").Return(conf)
 	c.On("Save").Return(nil)
 
-	New(&c).Execute("@hjertnes test")
+	New(c).Execute(conf.CommonConfig.Following)
+
 	config.DeleteConfigFiles()
+
 	_ = os.Setenv("TEST", "")
-
-
-
-
 }

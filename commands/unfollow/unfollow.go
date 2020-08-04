@@ -3,7 +3,7 @@ package unfollow
 
 import (
 	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/models"
+	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
 // Command is the exposed interface.
@@ -12,15 +12,18 @@ type Command interface {
 }
 
 type command struct {
-	config *models.Config
+	config config.Service
 }
 
 func (c *command) Execute(nick string) {
-	delete(c.config.CommonConfig.Following, nick)
-	config.Save(c.config)
+	delete(c.config.Get().CommonConfig.Following, nick)
+	err := c.config.Save()
+	if err != nil{
+		utils.ErrorHandler(err)
+	}
 }
 
 // New is the constructor.
-func New(conf *models.Config) Command {
+func New(conf config.Service) Command {
 	return &command{config: conf}
 }

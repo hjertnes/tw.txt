@@ -3,11 +3,13 @@ package timeline
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"regexp"
 	"sort"
 	"strings"
 	"time"
+
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
 
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/output"
@@ -20,7 +22,7 @@ type Command interface {
 }
 
 type command struct {
-	config     *models.Config
+	config    config.Service
 	loadFeeds loadfeeds.Service
 }
 
@@ -49,7 +51,7 @@ func (c *command) PrintTweet(tweet models.Tweet, now time.Time) {
 	text := c.ShortenMentions(tweet.Message)
 
 	nick := output.Green(tweet.Handle)
-	if tweet.Handle == c.config.CommonConfig.Nick {
+	if tweet.Handle == c.config.Get().CommonConfig.Nick {
 		nick = output.BoldGreen(tweet.Handle)
 	}
 
@@ -65,7 +67,7 @@ func (c *command) ShortenMentions(text string) string {
 	return re.ReplaceAllStringFunc(text, func(match string) string {
 		parts := re.FindStringSubmatch(match)
 		nick, url := parts[1], parts[2]
-		for fnick, furl := range c.config.CommonConfig.Following {
+		for fnick, furl := range c.config.Get().CommonConfig.Following {
 			if furl == url {
 				return c.FormatMention(nick, url, fnick)
 			}
@@ -81,7 +83,7 @@ func (c *command) FormatMention(nick, url, followednick string) string {
 		str += fmt.Sprintf("(%s)", followednick)
 	}
 
-	if utils.NormalizeURL(url) == utils.NormalizeURL(c.config.CommonConfig.URL) {
+	if utils.NormalizeURL(url) == utils.NormalizeURL(c.config.Get().CommonConfig.URL) {
 		return output.Red(str)
 	}
 
@@ -89,6 +91,6 @@ func (c *command) FormatMention(nick, url, followednick string) string {
 }
 
 // New creates new Command.
-func New(conf *models.Config, lf loadfeeds.Service) Command {
+func New(conf config.Service, lf loadfeeds.Service) Command {
 	return &command{config: conf, loadFeeds: lf}
 }

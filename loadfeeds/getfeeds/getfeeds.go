@@ -4,6 +4,7 @@ package getfeeds
 import (
 	"context"
 	"fmt"
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -22,13 +23,12 @@ type Command interface {
 }
 
 type command struct {
-	config *models.Config
+	config config.Service
 }
 
 const maxfetchers = 50
 
 func (c *command) Execute(feeds map[string]string) []models.Feed {
-
 	bar := progressbar.Default(int64(len(feeds)), "Loading...")
 
 	tweetsch := make(chan models.Feed, len(feeds))
@@ -47,11 +47,11 @@ func (c *command) Execute(feeds map[string]string) []models.Feed {
 			lm := time.Now()
 			cl := 0
 
-			if headers["Last-Modified"] != nil{
+			if headers["Last-Modified"] != nil {
 				lm, _ = time.Parse(time.RFC1123, headers["Last-Modified"][0])
 			}
 
-			if headers["Content-Length"] != nil{
+			if headers["Content-Length"] != nil {
 				cl, _ = strconv.Atoi(headers["Content-Length"][0])
 			}
 
@@ -85,15 +85,15 @@ func (c *command) GetFeed(url string) (bool, string, http.Header) {
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 
-	if c.config.CommonConfig.DiscloseIdentity {
+	if c.config.Get().CommonConfig.DiscloseIdentity {
 		req.Header.Set(
 			"User-Agent",
 			fmt.Sprintf(
 				"%s/%s (+%s; @%s)",
 				constants.Name,
 				constants.Version,
-				c.config.CommonConfig.URL,
-				c.config.CommonConfig.Nick,
+				c.config.Get().CommonConfig.URL,
+				c.config.Get().CommonConfig.Nick,
 			),
 		)
 	}
@@ -114,6 +114,6 @@ func (c *command) GetFeed(url string) (bool, string, http.Header) {
 }
 
 // New creates new Command.
-func New(conf *models.Config) Command {
+func New(conf config.Service) Command {
 	return &command{config: conf}
 }

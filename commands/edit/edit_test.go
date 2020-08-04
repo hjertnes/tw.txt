@@ -1,9 +1,10 @@
 package edit
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/config"
 	"os"
 	"testing"
+
+	"git.sr.ht/~hjertnes/tw.txt/config"
 )
 
 func TestTest(t *testing.T) {

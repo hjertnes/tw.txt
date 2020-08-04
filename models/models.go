@@ -19,28 +19,28 @@ type HTMLTweet struct {
 	Handle    string
 	URL       string
 	Message   template.HTML
-	Classes string
+	Classes   string
 }
 
 // Feed is the status of a request to a feed.
 type Feed struct {
 	ContentLength int
-	LastModified time.Time
-	Handle string
-	URL    string
-	Status bool
-	Body   string
+	LastModified  time.Time
+	Handle        string
+	URL           string
+	Status        bool
+	Body          string
 }
 
 type FeedHead struct {
 	ContentLength int
-	LastModified time.Time
-	URL    string
+	LastModified  time.Time
+	URL           string
 }
 
 type HTMLModel struct {
 	Timestamp time.Time
-	Timeline []HTMLTweet
+	Timeline  []HTMLTweet
 }
 
 // CommonConfig is a shared config intended to be supported by all twtxt clients.
@@ -54,7 +54,7 @@ type CommonConfig struct {
 
 // InternalConfig config file used by this client: located at ~/.tw.txt/config.yaml.
 type InternalConfig struct {
-	ConfigFileLocation string
+	ConfigFileLocation   string
 	TemplateFileLocation string
 }
 
@@ -65,12 +65,12 @@ type Config struct {
 }
 
 type CachedUser struct {
-	Handle string
-	URL string
-	Content string
-	NextCheck time.Time
-	Expire time.Time // 24h
-	LastUpdated time.Time
+	Handle        string
+	URL           string
+	Content       string
+	NextCheck     time.Time
+	Expire        time.Time // 24h
+	LastUpdated   time.Time
 	ContentLength int
 }
 

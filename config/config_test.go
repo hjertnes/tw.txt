@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+
 )
 
 func TestGetConfigDir(t *testing.T) {
@@ -28,10 +29,19 @@ func TestGetConfigFile(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-	_ = os.Setenv("TEST", "")
-	c, _ := New()
+	_ = os.Setenv("TEST", "true")
+	CreateConfigFiles()
+	c, err := New()
 
-	Save(c)
+	assert.Nil(t, err)
+
+	err = c.Save()
+
+	assert.Nil(t, err)
+
+	DeleteConfigFiles()
+
+	_ = os.Setenv("TEST", "")
 }
 
 func TestCreateConfigFiles(t *testing.T) {

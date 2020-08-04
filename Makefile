@@ -10,6 +10,6 @@ cover:
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out -o coverage.html
 lint:
-	golangci-lint run --fix
+	golangci-lint run
 install:
 	cp tw.txt ../../bin

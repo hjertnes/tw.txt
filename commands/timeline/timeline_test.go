@@ -2,10 +2,11 @@ package timeline
 
 import (
 	"fmt"
+	"testing"
+
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
-	"testing"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
 )
@@ -24,12 +25,15 @@ func TestTest(t *testing.T) {
 		},
 	}
 
+	c := &mocks.ConfigMock{}
 	lf := &mocks.LoadFeedsMock{}
 
+	c.On("Get").Return(conf)
+
 	lf.On("Execute").Return([]models.Feed{
-		models.Feed{},
+		{},
 	})
 
-	New(conf, lf).Execute("")
-	New(conf, lf).Execute("full")
+	New(c, lf).Execute("")
+	New(c, lf).Execute("full")
 }

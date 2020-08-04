@@ -1,20 +1,22 @@
-// Package timeline contains a command for showing the timeline
+// Package html contains a command for showing the timeline
 package html
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/patterns"
-	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
-	"github.com/gomarkdown/markdown"
-	"github.com/gomarkdown/markdown/parser"
+	"git.sr.ht/~hjertnes/tw.txt/config"
+	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"html/template"
 	"os"
 	"sort"
 	"strings"
 	"time"
 
+	"git.sr.ht/~hjertnes/patterns"
+	"git.sr.ht/~hjertnes/tw.txt/loadfeeds"
 	"git.sr.ht/~hjertnes/tw.txt/models"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/parser"
 )
 
 // Command is the publicly exposed interface.
@@ -23,7 +25,7 @@ type Command interface {
 }
 
 type command struct {
-	config     *models.Config
+	config    config.Service
 	loadFeeds loadfeeds.Service
 }
 
@@ -42,7 +44,7 @@ func (c *command) Execute() {
 		return newTimeline[j].Timestamp.Before(newTimeline[i].Timestamp)
 	})
 
-	t, err := template.ParseFiles(utils.ReplaceTilde(c.config.InternalConfig.TemplateFileLocation))
+	t, err := template.ParseFiles(utils.ReplaceTilde(c.config.Get().InternalConfig.TemplateFileLocation))
 	utils.ErrorHandler(err)
 
 	if !utils.Exist("timeline.html") {
@@ -63,31 +65,37 @@ func (c *command) Execute() {
 	utils.ErrorHandler(err)
 }
 
-func rewriteOrgModeLinks(input string) string{
+func rewriteOrgModeLinks(input string) string {
 	for {
 		parts, err := patterns.FindAndSplit(input, "[[", "]]", "][")
 		if err != nil {
 			break
 		}
 
-		if len(parts) == 1{
-			input = strings.ReplaceAll(input, fmt.Sprintf("[[%s]]", parts[0]), fmt.Sprintf(`<a href="%s">%s</a>`, parts[0], parts[0]))
+		if len(parts) == 1 {
+			input = strings.ReplaceAll(
+				input,
+				fmt.Sprintf("[[%s]]", parts[0]),
+				fmt.Sprintf(`<a href="%s">%s</a>`, parts[0], parts[0]))
 		} else {
-			input = strings.ReplaceAll(input, fmt.Sprintf("[[%s][%s]", parts[0], parts[1]), fmt.Sprintf(`<a href="%s">%s</a>`, parts[0], parts[1]))
+			input = strings.ReplaceAll(
+				input,
+				fmt.Sprintf("[[%s][%s]", parts[0], parts[1]),
+				fmt.Sprintf(`<a href="%s">%s</a>`, parts[0], parts[1]))
 		}
 	}
 
 	return input
 }
 
-func rewriteMentions(input string) string{
+func rewriteMentions(input string) string {
 	for {
 		match, err := patterns.FindAndSplit(input, "@<", ">", " ")
-		if err != nil{
+		if err != nil {
 			break
 		}
 
-		if len(match) < 2{
+		if len(match) < constants.Two {
 			break
 		}
 
@@ -100,26 +108,22 @@ func rewriteMentions(input string) string{
 	return input
 }
 
-
-
-func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
+func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet {
 	result := make([]models.HTMLTweet, 0)
 
 	for _, tweet := range timeline {
-		classes := make(map[string]string, 0)
+		classes := make(map[string]string)
 
-		if c.config.CommonConfig.Nick == tweet.Handle{
+		if c.config.Get().CommonConfig.Nick == tweet.Handle {
 			classes["by-myself"] = "by-myself"
 		}
 
-		if strings.Contains(tweet.Message, fmt.Sprintf("@<%s %s>", c.config.CommonConfig.Nick, c.config.CommonConfig.URL)){
+		if strings.Contains(tweet.Message, fmt.Sprintf("@<%s %s>", c.config.Get().CommonConfig.Nick, c.config.Get().CommonConfig.URL)) {
 			classes["mentioned"] = "mentioned"
 		}
 
 		tweet.Message = strings.ReplaceAll(tweet.Message, "<script>", "script")
 		tweet.Message = strings.ReplaceAll(tweet.Message, "</script>", "script")
-
-
 		tweet.Message = rewriteMentions(tweet.Message)
 		tweet.Message = rewriteOrgModeLinks(tweet.Message)
 
@@ -127,22 +131,24 @@ func (c *command) replaceStuff(timeline []models.Tweet) []models.HTMLTweet{
 
 		result = append(result, models.HTMLTweet{
 			Timestamp: tweet.Timestamp,
-			Handle: tweet.Handle,
-			URL: tweet.URL,
-			Message: template.HTML(html),
-			Classes: mapToString(classes),
+			Handle:    tweet.Handle,
+			URL:       tweet.URL,
+			/* #nosec */
+			Message:   template.HTML(html),
+			/* #sec */
+			Classes:   mapToString(classes),
 		})
 	}
 
 	return result
 }
 
-func mapToString(input map[string]string) string{
+func mapToString(input map[string]string) string {
 	res := ""
 
-	for key, _ := range input {
-		if !strings.Contains(res, key){
-			if res == ""{
+	for key := range input {
+		if !strings.Contains(res, key) {
+			if res == "" {
 				res = key
 			} else {
 				res = fmt.Sprintf("%s, %s", res, key)
@@ -154,6 +160,6 @@ func mapToString(input map[string]string) string{
 }
 
 // New creates new Command.
-func New(conf *models.Config, lf loadfeeds.Service) Command{
+func New(conf config.Service, lf loadfeeds.Service) Command {
 	return &command{config: conf, loadFeeds: lf}
 }

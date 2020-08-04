@@ -2,7 +2,7 @@
 package edit
 
 import (
-	"git.sr.ht/~hjertnes/tw.txt/models"
+	"git.sr.ht/~hjertnes/tw.txt/config"
 	"os"
 	"os/exec"
 
@@ -15,7 +15,7 @@ type Command interface {
 }
 
 type command struct {
-	config *models.Config
+	config config.Service
 }
 
 func (c *command) Execute(subCommand string) {
@@ -27,9 +27,9 @@ func (c *command) Execute(subCommand string) {
 	case "internal-config":
 		cmd.Args = append(cmd.Args, "~/tw.txt/config.yaml")
 	case "common-config":
-		cmd.Args = append(cmd.Args, c.config.InternalConfig.ConfigFileLocation)
+		cmd.Args = append(cmd.Args, c.config.Get().InternalConfig.ConfigFileLocation)
 	default:
-		cmd.Args = append(cmd.Args, c.config.CommonConfig.File)
+		cmd.Args = append(cmd.Args, c.config.Get().CommonConfig.File)
 	}
 
 	err := cmd.Start()
@@ -37,6 +37,6 @@ func (c *command) Execute(subCommand string) {
 }
 
 // New creates new Command.
-func New(conf *models.Config) Command {
+func New(conf config.Service) Command {
 	return &command{config: conf}
 }

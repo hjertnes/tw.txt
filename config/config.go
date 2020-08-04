@@ -3,14 +3,28 @@ package config
 
 import (
 	"fmt"
-	"git.sr.ht/~hjertnes/tw.txt/models"
 	"io/ioutil"
 	"os"
+
+	"git.sr.ht/~hjertnes/tw.txt/models"
 
 	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 	"gopkg.in/yaml.v2"
 )
+
+type Service interface {
+	Get() *models.Config
+	Save() error
+}
+
+type service struct {
+	config *models.Config
+}
+
+func (s *service) Get() *models.Config{
+	return s.config
+}
 
 // GetConfigDir Get Config Dir.
 func GetConfigDir() string {
@@ -121,7 +135,7 @@ func readCommonConfig(filename string) (*models.CommonConfig, error) {
 }
 
 // New builds configs.
-func New() (*models.Config, error) {
+func New() (Service, error) {
 	internal, err := readInternalConfig()
 	if err != nil {
 		return nil, err
@@ -132,19 +146,24 @@ func New() (*models.Config, error) {
 		return nil, err
 	}
 
-	return &models.Config{
-		InternalConfig: internal,
-		CommonConfig:   common,
+	return &service{
+		config: &models.Config{
+			InternalConfig: internal,
+			CommonConfig:   common,
+		},
 	}, nil
 }
 
 // Save Write back config files.
-func Save(conf *models.Config) {
-	err := writeInternalConfig(conf.InternalConfig)
-	utils.ErrorHandler(err)
+func (s *service) Save() error {
+	err := writeInternalConfig(s.config.InternalConfig)
+	if err != nil{
+		return err
+	}
 
-	err = writeCommonConfig(conf)
-	utils.ErrorHandler(err)
+	err = writeCommonConfig(s.config)
+
+	return err
 }
 
 // CreateConfigFiles Creates config files for tests.

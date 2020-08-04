@@ -3,7 +3,6 @@ package follow
 
 import (
 	"git.sr.ht/~hjertnes/tw.txt/config"
-	"git.sr.ht/~hjertnes/tw.txt/models"
 )
 
 // Command is the exposed interface.
@@ -12,15 +11,15 @@ type Command interface {
 }
 
 type command struct {
-	config *models.Config
+	config config.Service
 }
 
 func (c *command) Execute(nick string, url string) {
-	c.config.CommonConfig.Following[nick] = url
-	config.Save(c.config)
+	c.config.Get().CommonConfig.Following[nick] = url
+	c.config.Save()
 }
 
 // New is constructor.
-func New(conf *models.Config) Command {
+func New(conf config.Service) Command {
 	return &command{config: conf}
 }

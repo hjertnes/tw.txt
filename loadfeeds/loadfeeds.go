@@ -1,7 +1,10 @@
+// Package loadfeeds is the package that loads feeds and deals with caching, re-evaluation etc
 package loadfeeds
 
 import (
 	"errors"
+	"git.sr.ht/~hjertnes/tw.txt/config"
+
 	"git.sr.ht/~hjertnes/tw.txt/constants"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/cache"
 	"git.sr.ht/~hjertnes/tw.txt/loadfeeds/getfeeds"
@@ -10,48 +13,41 @@ import (
 	"git.sr.ht/~hjertnes/tw.txt/utils"
 )
 
+// Service is the exposed interface
 type Service interface {
 	Execute() []models.Feed
 }
 
 type service struct {
-	config *models.Config
-	cache cache.Service
+	config    config.Service
+	cache     cache.Service
 	headFeeds headfeeds.Command
-	getFeeds getfeeds.Command
+	getFeeds  getfeeds.Command
 }
 
 func (s *service) Execute() []models.Feed {
-	feeds := s.config.CommonConfig.Following
-	feeds[s.config.CommonConfig.Nick] = s.config.CommonConfig.URL
+	feeds := s.config.Get().CommonConfig.Following
+	feeds[s.config.Get().CommonConfig.Nick] = s.config.Get().CommonConfig.URL
 
 	feedsToGet := make(map[string]string)
 	feedsToHead := make(map[string]string)
 
-
 	data := make([]models.Feed, 0)
 
-	for handle, url := range feeds{
+	for handle, url := range feeds {
 		d, err := s.cache.Get(url)
 
-		if err != nil{
-			if errors.Is(err, constants.ErrExpired) || errors.Is(err, constants.ErrNotInCache){
+		if err != nil {
+			if errors.Is(err, constants.ErrExpired) || errors.Is(err, constants.ErrNotInCache) {
 				feedsToGet[handle] = url
 			}
 
-			if errors.Is(err, constants.ErrFetchHead){
+			if errors.Is(err, constants.ErrFetchHead) {
 				feedsToHead[handle] = url
 			}
 		} else {
 			s.cache.Set(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated)
-			data = append(data, models.Feed{
-				Handle: handle,
-				URL: url,
-				Status: true,
-				Body: d.Content,
-				LastModified: d.LastUpdated,
-				ContentLength: d.ContentLength,
-			})
+			data = append(data, FromCachedUser(d))
 		}
 	}
 
@@ -62,14 +58,7 @@ func (s *service) Execute() []models.Feed {
 			feedsToGet[d.Handle] = d.URL
 		} else {
 			s.cache.Set(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated)
-			data = append(data, models.Feed{
-				Handle: d.Handle,
-				URL: d.URL,
-				Status: true,
-				Body: d.Content,
-				LastModified: d.LastUpdated,
-				ContentLength: d.ContentLength,
-			})
+			data = append(data, FromCachedUser(d))
 		}
 	}
 
@@ -79,14 +68,26 @@ func (s *service) Execute() []models.Feed {
 	}
 
 	err := s.cache.Save()
-	if err != nil{
+	if err != nil {
 		utils.ErrorHandler(err)
 	}
 
 	return data
 }
 
-func New(config *models.Config, cache cache.Service, headFeeds headfeeds.Command, getFeeds getfeeds.Command) Service{
+func FromCachedUser(d *models.CachedUser) models.Feed{
+	return models.Feed{
+		Handle:        d.Handle,
+		URL:           d.URL,
+		Status:        true,
+		Body:          d.Content,
+		LastModified:  d.LastUpdated,
+		ContentLength: d.ContentLength,
+	}
+}
+
+// New is the constructor
+func New(config config.Service, cache cache.Service, headFeeds headfeeds.Command, getFeeds getfeeds.Command) Service {
 	return &service{
 		config, cache, headFeeds, getFeeds,
 	}
