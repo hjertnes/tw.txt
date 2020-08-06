@@ -38,6 +38,8 @@ func TestNew(t *testing.T) {
 
 	assert.Nil(t, err)
 
+	c.Get()
+
 	err = c.Save()
 
 	assert.Nil(t, err)

@@ -18,10 +18,16 @@ func Test(t *testing.T) {
 
 	cache.Set("handle", "https://some-url", "content", 0, time.Now())
 
+
 	d, err := cache.Get("https://some-url")
 
 	assert.Nil(t, err)
 	assert.NotNil(t, d)
+
+	d, err = cache.Get("https://something")
+
+	assert.Nil(t, d)
+	assert.NotNil(t, err)
 
 	err = cache.Save()
 

@@ -28,10 +28,15 @@ type command struct {
 
 const maxfetchers = 50
 
+type chanType struct {
+	Resp *http.Response
+	URL string
+}
+
 func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 	bar := progressbar.Default(int64(len(feeds)), "Loading...")
 
-	tweetsch := make(chan *http.Response, len(feeds))
+	tweetsch := make(chan *chanType, len(feeds))
 
 	var wg sync.WaitGroup
 	// max parallel http fetchers
@@ -44,7 +49,10 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 		go func(url string) {
 			resp := c.GetFeed(url)
 
-			tweetsch <- resp
+			tweetsch <- &chanType{
+				Resp: resp,
+				URL: url,
+			}
 
 			<-fetchers
 
@@ -62,23 +70,28 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 	result := make([]models.FeedHead, 0)
 
 	for feed := range tweetsch {
-		if feed == nil {
+		if feed.Resp == nil {
+			result = append(result, models.FeedHead{
+				URL: feed.URL,
+				LastModified: time.Now(),
+				ContentLength: 0,
+			})
 			continue
 		}
 
 		lm := time.Now()
 		cl := 0
 
-		if feed.Header["Last-Modified"] != nil {
-			lm, _ = time.Parse(time.RFC1123, feed.Header["Last-Modified"][0])
+		if feed.Resp.Header["Last-Modified"] != nil {
+			lm, _ = time.Parse(time.RFC1123, feed.Resp.Header["Last-Modified"][0])
 		}
 
-		if feed.Header["Content-Length"] != nil {
-			cl, _ = strconv.Atoi(feed.Header["Content-Length"][0])
+		if feed.Resp.Header["Content-Length"] != nil {
+			cl, _ = strconv.Atoi(feed.Resp.Header["Content-Length"][0])
 		}
 
 		result = append(result, models.FeedHead{
-			URL:           feed.Request.URL.String(),
+			URL:           feed.URL,
 			LastModified:  lm,
 			ContentLength: cl,
 		})

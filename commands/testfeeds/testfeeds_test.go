@@ -19,7 +19,7 @@ func TestTest(t *testing.T) {
 			DiscloseIdentity: true,
 			Following: map[string]string{
 				"hjertnes":    "https://hjertnes.social/twtxt.txt",
-				"nonExisting": "http://example.org/feed.txt",
+				"nonExisting": "http://very-much-invalid",
 			},
 			File: utils.ReplaceTilde(fmt.Sprintf("%s/twtxt.txt", config.GetConfigDir())),
 		},
@@ -31,7 +31,8 @@ func TestTest(t *testing.T) {
 	c.On("Get").Return(conf)
 
 	lf.On("Execute").Return([]models.Feed{
-		{},
+		{Status: true, Handle: "One", URL: "https://some-site",},
+		{Status: false, Handle: "Two", URL: "https://some-other-site",},
 	})
 
 	New(lf).Execute()

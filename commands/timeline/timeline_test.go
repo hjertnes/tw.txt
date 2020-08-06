@@ -3,6 +3,7 @@ package timeline
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
 	"git.sr.ht/~hjertnes/tw.txt/models"
@@ -31,7 +32,16 @@ func TestTest(t *testing.T) {
 	c.On("Get").Return(conf)
 
 	lf.On("Execute").Return([]models.Feed{
-		{},
+		{
+			URL: "https://hjertnes.social/twtxt.txt",
+			Handle: "hjertnes",
+			Body: fmt.Sprintf("%s\t@<hjertnes https://hjertnes.social> test", time.Now().Format(time.RFC3339)),
+		},
+		{
+			URL: "https://hjertnes.social/twtxt.txt",
+			Handle: "hjertnes",
+			Body: fmt.Sprintf("%s\t@<hjertnes https://hjertnes.social> test", time.Now().Format(time.RFC3339)),
+		},
 	})
 
 	New(c, lf).Execute("")

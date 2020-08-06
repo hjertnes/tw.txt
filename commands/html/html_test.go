@@ -3,6 +3,7 @@ package html
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
 	"git.sr.ht/~hjertnes/tw.txt/mocks"
@@ -34,7 +35,16 @@ func TestTest(t *testing.T) {
 	lf := &mocks.LoadFeedsMock{}
 
 	lf.On("Execute").Return([]models.Feed{
-		{},
+		{
+			URL: "https://hjertnes.social/twtxt.txt",
+			Handle: "hjertnes",
+			Body: fmt.Sprintf("%s\t@<hjertnes https://hjertnes.social> test", time.Now().Format(time.RFC3339)),
+		},
+		{
+			URL: "https://hjertnes.social/twtxt.txt",
+			Handle: "hjertnes",
+			Body: fmt.Sprintf("%s\t@<hjertnes https://hjertnes.social> test", time.Now().Format(time.RFC3339)),
+		},
 	})
 
 	New(c, lf).Execute()
