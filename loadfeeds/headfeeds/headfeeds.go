@@ -102,7 +102,7 @@ func (c *command) Execute(feeds map[string]string) []models.FeedHead {
 
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) *http.Response {
-	client := http.Client{Timeout: time.Second * constants.Two}
+	client := http.Client{Timeout: constants.HttpClientTimeout}
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
 

@@ -80,7 +80,7 @@ func (c *command) Execute(feeds map[string]string) []models.Feed {
 
 // GetFeed Fetches a feed.
 func (c *command) GetFeed(url string) (bool, string, http.Header) {
-	client := http.Client{Timeout: time.Second * constants.Two}
+	client := http.Client{Timeout: constants.HttpClientTimeout}
 	ctx := context.TODO()
 	req, _ := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 
