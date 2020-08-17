@@ -39,7 +39,14 @@ func (c *command) Execute() {
 		timeline = append(timeline, utils.ParseFile(feed.Handle, feed.URL, lines)...)
 	}
 
-	newTimeline := c.replaceStuff(timeline)
+	var newTimeline []models.HTMLTweet
+	for i, t := range c.replaceStuff(timeline){
+		if i < 1000 {
+			break
+		}
+
+		newTimeline = append(newTimeline, t)
+	}
 
 	sort.SliceStable(newTimeline, func(i int, j int) bool {
 		return newTimeline[j].Timestamp.Before(newTimeline[i].Timestamp)
