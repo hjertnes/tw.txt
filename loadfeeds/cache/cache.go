@@ -16,6 +16,7 @@ import (
 type Service interface {
 	Get(url string) (*models.CachedUser, error)
 	Set(handle string, url string, content string, contentLength int, lastUpdated time.Time)
+	Update(handle string, url string, content string, contentLength int, lastUpdated time.Time, expire time.Time)
 	Save() error
 }
 
@@ -49,6 +50,18 @@ func (s *service) Set(handle string, url string, content string, contentLength i
 		LastUpdated:   lastUpdated,
 		NextCheck:     time.Now().Add(time.Minute * constants.Two),
 		Expire:        time.Now().Add(constants.OneDay),
+	}
+}
+
+func (s *service) Update(handle string, url string, content string, contentLength int, lastUpdated time.Time, expire time.Time) {
+	s.data.Users[url] = &models.CachedUser{
+		Handle:        handle,
+		URL:           url,
+		Content:       content,
+		ContentLength: contentLength,
+		LastUpdated:   lastUpdated,
+		NextCheck:     time.Now().Add(time.Minute * constants.Two),
+		Expire:        expire,
 	}
 }
 

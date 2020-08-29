@@ -36,7 +36,7 @@ const twentyFour = 24
 const five = 5
 
 // HttpClientTimeout is the timeout used on all http clients
-const HttpClientTimeout = time.Second * five
+const HttpClientTimeout = time.Second * five * Two
 
 // OneDay Duration for a day.
 const OneDay = time.Hour * twentyFour

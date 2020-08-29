@@ -2,6 +2,10 @@
 package loadfeeds
 
 import (
+	"fmt"
+	log "github.com/sirupsen/logrus"
+	"io"
+
 	"errors"
 
 	"git.sr.ht/~hjertnes/tw.txt/config"
@@ -19,7 +23,16 @@ type Service interface {
 	Execute() []models.Feed
 }
 
+func buildLogger(writer io.WriteCloser) *log.Logger{
+	l := log.New()
+	l.SetReportCaller(true)
+	l.SetOutput(writer)
+	return l
+}
+
 type service struct {
+	logger *log.Logger
+	writer io.WriteCloser
 	config    config.Service
 	cache     cache.Service
 	headFeeds headfeeds.Command
@@ -36,34 +49,39 @@ func (s *service) Execute() []models.Feed {
 	data := make([]models.Feed, 0)
 
 	for handle, url := range feeds {
-		d, err := s.cache.Get(url)
+		_, err := s.cache.Get(url)
 
 		if err != nil {
 			if errors.Is(err, constants.ErrExpired) || errors.Is(err, constants.ErrNotInCache) {
+				s.logger.Info(fmt.Sprintf("%s is expired", url))
 				feedsToGet[handle] = url
 			}
 
 			if errors.Is(err, constants.ErrFetchHead) {
+				s.logger.Info(fmt.Sprintf("%s is should be re-evaluated", url))
 				feedsToHead[handle] = url
 			}
 		} else {
-			s.cache.Set(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated)
-			data = append(data, FromCachedUser(d))
+			panic(err)
 		}
 	}
 
 	for _, headData := range s.headFeeds.Execute(feedsToHead) {
+		s.logger.Info(fmt.Sprintf("HEAD %s", headData.URL))
 		d, _ := s.cache.Get(headData.URL)
 
-		if d.ContentLength != headData.ContentLength && headData.LastModified.After(d.LastUpdated) {
+		if d.ContentLength != headData.ContentLength || headData.LastModified.After(d.LastUpdated) {
+			s.logger.Info(fmt.Sprintf("Should GET %s", headData.URL))
 			feedsToGet[d.Handle] = d.URL
 		} else {
-			s.cache.Set(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated)
+			s.logger.Info(fmt.Sprintf("Keeping cache for %s", headData.URL))
+			s.cache.Update(d.Handle, d.URL, d.Content, d.ContentLength, d.LastUpdated, d.Expire)
 			data = append(data, FromCachedUser(d))
 		}
 	}
 
 	for _, getData := range s.getFeeds.Execute(feedsToGet) {
+		s.logger.Info(fmt.Sprintf("GET %s", getData.URL))
 		s.cache.Set(getData.Handle, getData.URL, getData.Body, getData.ContentLength, getData.LastModified)
 		data = append(data, getData)
 	}
@@ -73,6 +91,7 @@ func (s *service) Execute() []models.Feed {
 		utils.ErrorHandler(err)
 	}
 
+	_ = s.writer.Close()
 	return data
 }
 
@@ -89,8 +108,20 @@ func FromCachedUser(d *models.CachedUser) models.Feed {
 }
 
 // New is the constructor.
-func New(config config.Service, cache cache.Service, headFeeds headfeeds.Command, getFeeds getfeeds.Command) Service {
+func New(
+	writer io.WriteCloser,
+	config config.Service,
+	cache cache.Service,
+	headFeeds headfeeds.Command,
+	getFeeds getfeeds.Command,
+	) Service {
+
 	return &service{
-		config, cache, headFeeds, getFeeds,
+		buildLogger(writer),
+		writer,
+		config,
+		cache,
+		headFeeds,
+		getFeeds,
 	}
 }

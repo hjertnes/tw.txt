@@ -83,12 +83,21 @@ func runProgram(args []string) {
 }
 
 func buildLoadFeeds(conf config.Service) loadfeeds.Service {
-	c, _ := cache.New()
-	// utils.ErrorHandler(err)
+	c, err := cache.New()
+	utils.ErrorHandler(err)
+
+	if !utils.Exist(utils.ReplaceTilde("~/.tw.txt/log")){
+		f, err := os.Create(utils.ReplaceTilde("~/.tw.txt/log"))
+		utils.ErrorHandler(err)
+
+		_ = f.Close()
+	}
+	f, err := os.OpenFile(utils.ReplaceTilde("~/.tw.txt/log"), os.O_RDWR|os.O_CREATE, 0755)
+	utils.ErrorHandler(err)
 
 	hf := headfeeds.New(conf)
 	gf := getfeeds.New(conf)
-	lf := loadfeeds.New(conf, c, hf, gf)
+	lf := loadfeeds.New(f, conf, c, hf, gf)
 
 	return lf
 }

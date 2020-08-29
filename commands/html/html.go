@@ -40,11 +40,7 @@ func (c *command) Execute() {
 	}
 
 	var newTimeline []models.HTMLTweet
-	for i, t := range c.replaceStuff(timeline){
-		if i < 1000 {
-			break
-		}
-
+	for _, t := range c.replaceStuff(timeline){
 		newTimeline = append(newTimeline, t)
 	}
 
